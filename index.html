@@ -165,6 +165,25 @@
         color: #777;
     }
 
+    /* =========================
+       FLECHA DE EXPANSIÓN
+    ========================== */
+
+    .expand-arrow {
+        display: inline-block;
+        width: 22px;
+        margin-right: 4px;
+        color: #777777;
+        font-size: 17px;
+        font-weight: normal;
+        text-align: center;
+        transition: transform 0.2s ease;
+    }
+
+    .expand-arrow.open {
+        color: #999999;
+    }
+
     body.dark-mode {
         background: #0b0b0b;
         color: #b0b0b0;
@@ -1126,6 +1145,13 @@ Loading servers...
                     "Unknown";
 
 
+                const isExpanded =
+
+                    expandedServerId ===
+
+                    serverId;
+
+
                 const row =
 
                     document.createElement(
@@ -1166,6 +1192,36 @@ Loading servers...
                     </td>
 
                     <td class="server-name">
+
+                        <span class="expand-arrow ${
+
+                            isExpanded
+
+                                ?
+
+                            "open"
+
+                                :
+
+                            ""
+
+                        }">
+
+                            ${
+
+                                isExpanded
+
+                                    ?
+
+                                "⌃"
+
+                                    :
+
+                                "⌄"
+
+                            }
+
+                        </span>
 
                         ${escapeHtml(
 
