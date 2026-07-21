@@ -111,16 +111,16 @@
     }
 
     tr.server-row:nth-child(odd) {
-        background: #e8e8e8;
+        background: #c2c2c2;
     }
 
-    tr.server-row:nth-child(even) {
-        background: #ffffff;
-    }
+tr.server-row:nth-child(even) {
+    background: #d2d2d2;
+}
 
-    tr.server-row:hover {
-        background: #f4f4f4;
-    }
+tr.server-row:hover {
+    background: #c4c4c4;
+}
 
     .server-name {
         font-weight: bold;
@@ -130,6 +130,23 @@
         font-weight: bold;
         white-space: nowrap;
     }
+	
+	.country-flag-letter {
+    font-weight: bold;
+}
+
+.country-flag-1 {
+    color: #6ec6e8;
+}
+
+.country-flag-2 {
+    color: #eeeeee;
+}
+
+.country-flag-3 {
+    color: #6ec6e8;
+}
+	
 
     .country {
         white-space: nowrap;
@@ -866,6 +883,478 @@ Loading servers...
 
     }
 
+function renderCountryName(
+
+    country,
+
+    countryCode
+
+) {
+
+    const name =
+
+        String(
+
+            country ||
+
+            "Unknown"
+
+        );
+
+
+    const code =
+
+        String(
+
+            countryCode ||
+
+            ""
+
+        )
+
+            .toUpperCase();
+
+
+    const colors = {
+
+
+        AR: [
+
+            "#74ACDF",
+
+            "#FFFFFF",
+
+            "#74ACDF"
+
+        ],
+
+
+        BR: [
+
+            "#009B3A",
+
+            "#FFDF00",
+
+            "#009B3A"
+
+        ],
+
+
+        US: [
+
+            "#B22234",
+
+            "#FFFFFF",
+
+            "#3C3B6E"
+
+        ],
+
+
+        GB: [
+
+            "#012169",
+
+            "#FFFFFF",
+
+            "#C8102E"
+
+        ],
+
+
+        FR: [
+
+            "#0055A4",
+
+            "#FFFFFF",
+
+            "#EF4135"
+
+        ],
+
+
+        DE: [
+
+            "#000000",
+
+            "#DD0000",
+
+            "#FFCE00"
+
+        ],
+
+
+        IT: [
+
+            "#009246",
+
+            "#FFFFFF",
+
+            "#CE2B37"
+
+        ],
+
+
+        ES: [
+
+            "#AA151B",
+
+            "#F1BF00",
+
+            "#AA151B"
+
+        ],
+
+
+        PT: [
+
+            "#046A38",
+
+            "#DA291C",
+
+            "#046A38"
+
+        ],
+
+
+        RU: [
+
+            "#FFFFFF",
+
+            "#0039A6",
+
+            "#D52B1E"
+
+        ],
+
+
+        PL: [
+
+            "#FFFFFF",
+
+            "#DC143C",
+
+            "#DC143C"
+
+        ],
+
+
+        NL: [
+
+            "#AE1C28",
+
+            "#FFFFFF",
+
+            "#21468B"
+
+        ],
+
+
+        CA: [
+
+            "#FF0000",
+
+            "#FFFFFF",
+
+            "#FF0000"
+
+        ],
+
+
+        MX: [
+
+            "#006847",
+
+            "#FFFFFF",
+
+            "#CE1126"
+
+        ],
+
+
+        CL: [
+
+            "#0039A6",
+
+            "#FFFFFF",
+
+            "#D52B1E"
+
+        ],
+
+
+        CO: [
+
+            "#FCD116",
+
+            "#003893",
+
+            "#CE1126"
+
+        ],
+
+
+        AU: [
+
+            "#00008B",
+
+            "#FFFFFF",
+
+            "#FF0000"
+
+        ],
+
+
+        JP: [
+
+            "#FFFFFF",
+
+            "#BC002D",
+
+            "#FFFFFF"
+
+        ],
+
+
+        KR: [
+
+            "#FFFFFF",
+
+            "#CD2E3A",
+
+            "#0047A0"
+
+        ],
+
+
+        CN: [
+
+            "#DE2910",
+
+            "#FFDE00",
+
+            "#DE2910"
+
+        ],
+
+
+        IN: [
+
+            "#FF9933",
+
+            "#FFFFFF",
+
+            "#138808"
+
+        ],
+
+
+        SE: [
+
+            "#006AA7",
+
+            "#FECC00",
+
+            "#006AA7"
+
+        ],
+
+
+        NO: [
+
+            "#BA0C2F",
+
+            "#FFFFFF",
+
+            "#00205B"
+
+        ],
+
+
+        FI: [
+
+            "#FFFFFF",
+
+            "#003580",
+
+            "#FFFFFF"
+
+        ],
+
+
+        TR: [
+
+            "#E30A17",
+
+            "#FFFFFF",
+
+            "#E30A17"
+
+        ],
+
+
+        UA: [
+
+            "#0057B7",
+
+            "#FFD700",
+
+            "#0057B7"
+
+        ],
+
+
+        CH: [
+
+            "#D52B1E",
+
+            "#FFFFFF",
+
+            "#D52B1E"
+
+        ],
+
+
+        AT: [
+
+            "#ED2939",
+
+            "#FFFFFF",
+
+            "#ED2939"
+
+        ],
+
+
+        BE: [
+
+            "#000000",
+
+            "#FFD700",
+
+            "#EF3340"
+
+        ],
+
+
+        DK: [
+
+            "#C8102E",
+
+            "#FFFFFF",
+
+            "#C8102E"
+
+        ],
+
+
+        CZ: [
+
+            "#FFFFFF",
+
+            "#D7141A",
+
+            "#11457E"
+
+        ],
+
+
+        RO: [
+
+            "#002B7F",
+
+            "#FCD116",
+
+            "#CE1126"
+
+        ],
+
+
+        GR: [
+
+            "#0D5EAF",
+
+            "#FFFFFF",
+
+            "#0D5EAF"
+
+        ]
+
+    };
+
+
+    const selectedColors =
+
+        colors[code] ||
+
+        [
+
+            "#888888",
+
+            "#CCCCCC",
+
+            "#888888"
+
+        ];
+
+
+    const firstThree =
+
+        name.substring(
+
+            0,
+
+            3
+
+        );
+
+
+    const rest =
+
+        name.substring(
+
+            3
+
+        );
+
+
+    return `
+
+        <span
+
+            class="country-flag-letter"
+
+            style="color: ${selectedColors[0]}"
+
+        >
+
+            ${escapeHtml(firstThree[0] || "")}
+
+        </span><span
+
+            class="country-flag-letter"
+
+            style="color: ${selectedColors[1]}"
+
+        >
+
+            ${escapeHtml(firstThree[1] || "")}
+
+        </span><span
+
+            class="country-flag-letter"
+
+            style="color: ${selectedColors[2]}"
+
+        >
+
+            ${escapeHtml(firstThree[2] || "")}
+
+        </span>${escapeHtml(rest)}
+
+    `;
+
+}
 
     function renderGame(
 
@@ -1152,13 +1641,20 @@ Loading servers...
                     );
 
 
-                const country =
+const country =
 
-                    server.location?.countryName ||
+    server.location?.countryName ||
 
-                    server.location?.countryCode ||
+    server.location?.countryCode ||
 
-                    "Unknown";
+    "Unknown";
+
+
+const countryCode =
+
+    server.location?.countryCode ||
+
+    "";
 
 
                 const isExpanded =
@@ -1197,15 +1693,17 @@ Loading servers...
 
                 row.innerHTML = `
 
-                    <td class="country">
+ <td class="country">
 
-                        ${escapeHtml(
+    ${renderCountryName(
 
-                            country
+        country,
 
-                        )}
+        countryCode
 
-                    </td>
+    )}
+
+</td>
 
                     <td class="server-name">
 
