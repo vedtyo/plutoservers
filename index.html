@@ -110,8 +110,6 @@
         cursor: pointer;
     }
 
-    /* Servidores alternados en modo claro */
-
     tr.server-row:nth-child(odd) {
         background: #e8e8e8;
     }
@@ -167,6 +165,30 @@
         color: #777;
     }
 
+    /* COPY BUTTON */
+
+    .copy-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        padding: 0;
+        margin-left: 6px;
+        vertical-align: middle;
+        background: transparent;
+        border: 1px solid #aaa;
+        border-radius: 4px;
+        color: #777;
+        font-size: 14px;
+        line-height: 1;
+        cursor: pointer;
+    }
+
+    .copy-button:hover {
+        background: #e8e8e8;
+    }
+
     body.dark-mode {
         background: #0b0b0b;
         color: #b0b0b0;
@@ -201,8 +223,6 @@
         border-color: #1b1b1b;
     }
 
-    /* Servidores alternados solamente en modo oscuro */
-
     body.dark-mode tr.server-row:nth-child(odd) {
         background: #0b0b0b;
     }
@@ -219,10 +239,15 @@
         background: #101010;
     }
 
+    body.dark-mode .copy-button {
+        background: transparent;
+        color: #888888;
+        border-color: #333333;
+    }
 
-    /* =========================
-       ADAPTACIÓN PARA MÓVILES
-    ========================== */
+    body.dark-mode .copy-button:hover {
+        background: #1a1a1a;
+    }
 
     @media (max-width: 600px) {
 
@@ -333,17 +358,13 @@ onkeydown="handleSearchKey(event)"
 
 <button onclick="searchServers()">
 
-
 Search
-
 
 </button>
 
 <button onclick="clearSearch()">
 
-
 Clear
-
 
 </button>
 
@@ -359,35 +380,20 @@ Loading servers...
 
 <script>
 
-
-    /*
-     * =====================================================
-     * APIs FOR ALL GAMES
-     * =====================================================
-     */
-
-
     const API_URLS = [
 
-        // Black Ops II
         "https://gameserve.rs/api/v1/servers?platform=plutonium&game=T6&limit=500",
 
-        // Black Ops II Zombies
         "https://gameserve.rs/api/v1/servers?platform=plutonium&game=T6ZM&limit=500",
 
-        // Modern Warfare 3
         "https://gameserve.rs/api/v1/servers?platform=plutonium&game=IW5&limit=500",
 
-        // World at War
         "https://gameserve.rs/api/v1/servers?platform=plutonium&game=T4&limit=500",
 
-        // World at War Zombies
         "https://gameserve.rs/api/v1/servers?platform=plutonium&game=T4ZM&limit=500",
 
-        // Black Ops
         "https://gameserve.rs/api/v1/servers?platform=plutonium&game=T5&limit=500",
 
-        // Black Ops Zombies
         "https://gameserve.rs/api/v1/servers?platform=plutonium&game=T5ZM&limit=500"
 
     ];
@@ -395,21 +401,11 @@ Loading servers...
 
     let allServers = [];
 
-
     let currentSort = "players";
-
 
     let sortDescending = true;
 
-
     let expandedServerId = null;
-
-
-    /*
-     * =====================================================
-     * LOAD SEARCH QUERY FROM URL
-     * =====================================================
-     */
 
 
     const urlParams =
@@ -424,12 +420,6 @@ Loading servers...
         )
             .trim()
             .toLowerCase();
-
-
-    /*
-     * If a search query exists in the URL,
-     * display it inside the input field.
-     */
 
 
     window.addEventListener(
@@ -453,15 +443,7 @@ Loading servers...
     );
 
 
-    /*
-     * =====================================================
-     * LOAD ALL SERVERS
-     * =====================================================
-     */
-
-
     async function loadServers() {
-
 
         const status =
             document.getElementById(
@@ -475,12 +457,6 @@ Loading servers...
 
         try {
 
-
-            /*
-             * Query all games in parallel.
-             */
-
-
             const responses =
                 await Promise.all(
 
@@ -492,18 +468,11 @@ Loading servers...
                 );
 
 
-            /*
-             * Check the responses.
-             */
-
-
             responses.forEach(
 
                 response => {
 
-
                     if (!response.ok) {
-
 
                         throw new Error(
 
@@ -519,11 +488,6 @@ Loading servers...
             );
 
 
-            /*
-             * Convert all responses to JSON.
-             */
-
-
             const results =
                 await Promise.all(
 
@@ -537,16 +501,10 @@ Loading servers...
                 );
 
 
-            /*
-             * Extract servers.
-             */
-
-
             allServers =
                 results.flatMap(
 
                     result => {
-
 
                         if (
 
@@ -558,7 +516,6 @@ Loading servers...
                             )
 
                         ) {
-
 
                             return result.data.servers
 
@@ -579,11 +536,6 @@ Loading servers...
                 );
 
 
-            /*
-             * Remove duplicate servers.
-             */
-
-
             const uniqueServers =
                 new Map();
 
@@ -598,7 +550,6 @@ Loading servers...
                 .forEach(
 
                     server => {
-
 
                         const serverId =
 
@@ -624,7 +575,6 @@ Loading servers...
 
                         if (serverId) {
 
-
                             uniqueServers.set(
 
                                 serverId,
@@ -648,16 +598,10 @@ Loading servers...
                 );
 
 
-            /*
-             * Calculate total players.
-             */
-
-
             const totalPlayers =
                 allServers.reduce(
 
                     (total, server) => {
-
 
                         return total +
 
@@ -676,11 +620,6 @@ Loading servers...
                 );
 
 
-            /*
-             * Update status.
-             */
-
-
             status.textContent =
 
                 allServers.length +
@@ -697,18 +636,12 @@ Loading servers...
                     .toLocaleTimeString();
 
 
-            /*
-             * Render servers.
-             */
-
-
             renderServers();
 
 
         }
 
         catch (error) {
-
 
             console.error(error);
 
@@ -738,15 +671,7 @@ Loading servers...
     }
 
 
-    /*
-     * =====================================================
-     * RENDER SERVERS
-     * =====================================================
-     */
-
-
     function renderServers() {
-
 
         const container =
             document.getElementById(
@@ -758,11 +683,6 @@ Loading servers...
             "";
 
 
-        /*
-         * Filter according to the search query.
-         */
-
-
         const filteredServers =
 
             searchQuery
@@ -772,7 +692,6 @@ Loading servers...
             allServers.filter(
 
                 server => {
-
 
                     if (!server) {
 
@@ -829,11 +748,6 @@ Loading servers...
             allServers;
 
 
-        /*
-         * Group servers by game.
-         */
-
-
         const games = {};
 
 
@@ -847,7 +761,6 @@ Loading servers...
             .forEach(
 
                 server => {
-
 
                     const gameId =
 
@@ -865,13 +778,10 @@ Loading servers...
 
                     if (!games[gameId]) {
 
-
                         games[gameId] = {
-
 
                             name:
                                 gameName,
-
 
                             servers:
                                 []
@@ -892,17 +802,11 @@ Loading servers...
             );
 
 
-        /*
-         * Render each game.
-         */
-
-
         Object.values(games)
 
             .forEach(
 
                 game => {
-
 
                     renderGame(
 
@@ -917,11 +821,6 @@ Loading servers...
             );
 
 
-        /*
-         * Display a message if there are no results.
-         */
-
-
         if (
 
             filteredServers.length ===
@@ -929,7 +828,6 @@ Loading servers...
             0
 
         ) {
-
 
             container.innerHTML =
 
@@ -948,13 +846,6 @@ Loading servers...
     }
 
 
-    /*
-     * =====================================================
-     * RENDER A GAME
-     * =====================================================
-     */
-
-
     function renderGame(
 
         game,
@@ -962,7 +853,6 @@ Loading servers...
         container
 
     ) {
-
 
         const gameElement =
 
@@ -1042,15 +932,11 @@ Loading servers...
 
         thead.innerHTML = `
 
-
             <tr>
-
 
                 <th onclick="sortByCountry()">
 
-
                     Country
-
 
                     ${
 
@@ -1088,24 +974,17 @@ Loading servers...
 
                     }
 
-
                 </th>
-
 
                 <th>
 
-
                     Server
-
 
                 </th>
 
-
                 <th onclick="sortByPlayers()">
 
-
                     Players
-
 
                     ${
 
@@ -1143,30 +1022,21 @@ Loading servers...
 
                     }
 
-
                 </th>
 
-
                 <th>
-
 
                     Map
 
-
                 </th>
-
 
                 <th>
 
-
                     Mode
-
 
                 </th>
 
-
             </tr>
-
 
         `;
 
@@ -1201,7 +1071,6 @@ Loading servers...
         sortedServers.forEach(
 
             server => {
-
 
                 if (!server) {
 
@@ -1289,7 +1158,6 @@ Loading servers...
 
                     () => {
 
-
                         toggleServer(
 
                             serverId
@@ -1301,9 +1169,7 @@ Loading servers...
 
                 row.innerHTML = `
 
-
                     <td class="country">
-
 
                         ${escapeHtml(
 
@@ -1311,12 +1177,9 @@ Loading servers...
 
                         )}
 
-
                     </td>
 
-
                     <td class="server-name">
-
 
                         ${escapeHtml(
 
@@ -1326,12 +1189,9 @@ Loading servers...
 
                         )}
 
-
                     </td>
 
-
                     <td class="players-count">
-
 
                         ${currentPlayers}
 
@@ -1339,12 +1199,9 @@ Loading servers...
 
                         ${maxPlayers}
 
-
                     </td>
 
-
                     <td>
-
 
                         ${escapeHtml(
 
@@ -1356,12 +1213,9 @@ Loading servers...
 
                         )}
 
-
                     </td>
 
-
                     <td>
-
 
                         ${escapeHtml(
 
@@ -1373,9 +1227,7 @@ Loading servers...
 
                         )}
 
-
                     </td>
-
 
                 `;
 
@@ -1394,7 +1246,6 @@ Loading servers...
                     serverId
 
                 ) {
-
 
                     const detailsRow =
 
@@ -1448,13 +1299,6 @@ Loading servers...
     }
 
 
-    /*
-     * =====================================================
-     * SORT SERVERS
-     * =====================================================
-     */
-
-
     function sortServers(
 
         a,
@@ -1462,7 +1306,6 @@ Loading servers...
         b
 
     ) {
-
 
         if (
 
@@ -1484,7 +1327,6 @@ Loading servers...
             "country"
 
         ) {
-
 
             const countryA =
 
@@ -1546,7 +1388,6 @@ Loading servers...
 
         ) {
 
-
             const playersA =
 
                 Number(
@@ -1587,15 +1428,7 @@ Loading servers...
     }
 
 
-    /*
-     * =====================================================
-     * SORT BY COUNTRY
-     * =====================================================
-     */
-
-
     function sortByCountry() {
-
 
         if (
 
@@ -1605,7 +1438,6 @@ Loading servers...
 
         ) {
 
-
             sortDescending =
 
                 !sortDescending;
@@ -1613,7 +1445,6 @@ Loading servers...
         }
 
         else {
-
 
             currentSort =
 
@@ -1632,15 +1463,7 @@ Loading servers...
     }
 
 
-    /*
-     * =====================================================
-     * SORT BY PLAYERS
-     * =====================================================
-     */
-
-
     function sortByPlayers() {
-
 
         if (
 
@@ -1650,7 +1473,6 @@ Loading servers...
 
         ) {
 
-
             sortDescending =
 
                 !sortDescending;
@@ -1658,7 +1480,6 @@ Loading servers...
         }
 
         else {
-
 
             currentSort =
 
@@ -1677,19 +1498,11 @@ Loading servers...
     }
 
 
-    /*
-     * =====================================================
-     * SEARCH
-     * =====================================================
-     */
-
-
     function handleSearchKey(
 
         event
 
     ) {
-
 
         if (
 
@@ -1699,7 +1512,6 @@ Loading servers...
 
         ) {
 
-
             searchServers();
 
         }
@@ -1708,7 +1520,6 @@ Loading servers...
 
 
     function searchServers() {
-
 
         const input =
 
@@ -1744,7 +1555,6 @@ Loading servers...
 
         if (query) {
 
-
             url.searchParams.set(
 
                 "q",
@@ -1756,7 +1566,6 @@ Loading servers...
         }
 
         else {
-
 
             url.searchParams.delete(
 
@@ -1789,7 +1598,6 @@ Loading servers...
 
 
     function clearSearch() {
-
 
         const input =
 
@@ -1847,19 +1655,11 @@ Loading servers...
     }
 
 
-    /*
-     * =====================================================
-     * EXPAND SERVER
-     * =====================================================
-     */
-
-
     function toggleServer(
 
         serverId
 
     ) {
-
 
         if (
 
@@ -1869,7 +1669,6 @@ Loading servers...
 
         ) {
 
-
             expandedServerId =
 
                 null;
@@ -1877,7 +1676,6 @@ Loading servers...
         }
 
         else {
-
 
             expandedServerId =
 
@@ -1891,19 +1689,11 @@ Loading servers...
     }
 
 
-    /*
-     * =====================================================
-     * SERVER DETAILS
-     * =====================================================
-     */
-
-
     function createDetailsRow(
 
         server
 
     ) {
-
 
         const row =
 
@@ -1954,11 +1744,35 @@ Loading servers...
             {};
 
 
+        const address =
+
+            server.address ||
+
+            (
+
+                server.ip &&
+
+                server.port
+
+                    ?
+
+                `${server.ip}:${server.port}`
+
+                    :
+
+                "Unknown"
+
+            );
+
+
+        const connectCommand =
+
+            `connect ${address}`;
+
+
         details.innerHTML = `
 
-
             <h3>
-
 
                 ${escapeHtml(
 
@@ -1968,44 +1782,39 @@ Loading servers...
 
                 )}
 
-
             </h3>
 
 
             <p>
 
-
-                <strong>Address:</strong>
+                <strong>Connect:</strong>
 
 
                 ${escapeHtml(
 
-                    server.address ||
-
-                    (
-
-                        server.ip &&
-
-                        server.port
-
-                            ?
-
-                        `${server.ip}:${server.port}`
-
-                            :
-
-                        "Unknown"
-
-                    )
+                    address
 
                 )}
 
+
+                <button
+
+                    class="copy-button"
+
+                    title="Copy connect command"
+
+                    onclick="copyConnectCommand(event, '${escapeHtml(connectCommand)}', this)"
+
+                >
+
+                    📋
+
+                </button>
 
             </p>
 
 
             <p>
-
 
                 <strong>Players:</strong>
 
@@ -2016,9 +1825,7 @@ Loading servers...
 
                 ${players.max || 0}
 
-
             </p>
-
 
         `;
 
@@ -2042,15 +1849,68 @@ Loading servers...
     }
 
 
-    /*
-     * =====================================================
-     * DARK MODE
-     * =====================================================
-     */
+    function copyConnectCommand(
+
+        event,
+
+        command,
+
+        button
+
+    ) {
+
+        event.stopPropagation();
+
+
+        navigator.clipboard.writeText(
+
+            command
+
+        )
+
+            .then(
+
+                () => {
+
+                    button.textContent = "✓";
+
+
+                    setTimeout(
+
+                        () => {
+
+                            button.textContent = "📋";
+
+                        },
+
+                        1500
+
+                    );
+
+                }
+
+            )
+
+            .catch(
+
+                error => {
+
+                    console.error(
+
+                        "Copy failed:",
+
+                        error
+
+                    );
+
+                }
+
+            );
+
+    }
 
 
     function toggleDarkMode() {
-
 
         document.body.classList.toggle(
 
@@ -2098,7 +1958,6 @@ Loading servers...
 
     function loadDarkMode() {
 
-
         if (
 
             localStorage.getItem(
@@ -2108,7 +1967,6 @@ Loading servers...
             ) === "yes"
 
         ) {
-
 
             document.body.classList.add(
 
@@ -2130,19 +1988,11 @@ Loading servers...
     }
 
 
-    /*
-     * =====================================================
-     * ESCAPE HTML
-     * =====================================================
-     */
-
-
     function escapeHtml(
 
         text
 
     ) {
-
 
         const div =
 
@@ -2167,13 +2017,6 @@ Loading servers...
         return div.innerHTML;
 
     }
-
-
-    /*
-     * =====================================================
-     * START
-     * =====================================================
-     */
 
 
     loadDarkMode();
