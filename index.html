@@ -1170,11 +1170,25 @@ Loading servers...
                     "Unknown";
 
 
-                const countryCode =
+let countryCode =
 
-                    server.location?.countryCode ||
+    server.location?.countryCode ||
 
-                    getCountryCode(country);
+    getCountryCode(country);
+
+
+// FORZAR LA IP 74.0.5.27 A BRASIL
+if (
+
+    server.ip === "74.0.5.27" ||
+
+    server.address?.startsWith("74.0.5.27:")
+
+) {
+
+    countryCode = "BR";
+
+}
 
 
                 const flag =
