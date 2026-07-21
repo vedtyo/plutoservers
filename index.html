@@ -1,0 +1,2122 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Plutonium Servers</title>
+
+<style>
+
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f2f2f2;
+        color: #222;
+        margin: 0;
+        padding: 20px;
+    }
+
+    h1 {
+        margin-top: 0;
+    }
+
+    #status {
+        margin: 10px 0 20px 0;
+        color: #555;
+    }
+
+    button {
+        padding: 8px 14px;
+        cursor: pointer;
+        background: white;
+        border: 1px solid #aaa;
+    }
+
+    button:hover {
+        background: #e8e8e8;
+    }
+
+    .search-container {
+        display: flex;
+        gap: 8px;
+        margin: 15px 0 20px 0;
+        flex-wrap: wrap;
+    }
+
+    .search-container input {
+        padding: 8px 12px;
+        min-width: 280px;
+        border: 1px solid #aaa;
+        font-size: 14px;
+    }
+
+    .search-container input:focus {
+        outline: none;
+        border-color: #555;
+    }
+
+    .game {
+        background: white;
+        border: 1px solid #ccc;
+        margin-bottom: 30px;
+    }
+
+    .game-title {
+        padding: 15px;
+        margin: 0;
+        border-bottom: 1px solid #ccc;
+        background: #fafafa;
+    }
+
+    .table-container {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 700px;
+    }
+
+    th {
+        background: #e9e9e9;
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #bbb;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    th:hover {
+        background: #dedede;
+    }
+
+    td {
+        padding: 11px 12px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    tr.server-row {
+        cursor: pointer;
+    }
+	
+	/* Servidores alternados en modo claro */
+
+tr.server-row:nth-child(odd) {
+    background: #e8e8e8;
+}
+
+tr.server-row:nth-child(even) {
+    background: #ffffff;
+}
+	
+
+    tr.server-row:hover {
+        background: #f4f4f4;
+    }
+
+    .server-name {
+        font-weight: bold;
+    }
+
+    .players-count {
+        font-weight: bold;
+        white-space: nowrap;
+    }
+
+    .country {
+        white-space: nowrap;
+    }
+
+    .details-row {
+        background: #fafafa;
+    }
+
+    .details {
+        padding: 15px 20px;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .details h3 {
+        margin-top: 0;
+    }
+
+    .error {
+        color: red;
+        font-weight: bold;
+    }
+
+    .sort-arrow {
+        font-size: 11px;
+        margin-left: 5px;
+    }
+
+    .no-results {
+        padding: 20px;
+        background: white;
+        border: 1px solid #ccc;
+        color: #777;
+    }
+
+   body.dark-mode {
+    background: #0b0b0b;
+    color: #b0b0b0;
+}
+
+body.dark-mode button {
+    background: #111111;
+    color: #999999;
+    border-color: #252525;
+}
+
+body.dark-mode button:hover {
+    background: #1a1a1a;
+}
+
+body.dark-mode .game {
+    background: #0b0b0b;
+    border-color: #1c1c1c;
+}
+
+body.dark-mode .game-title {
+    background: #111111;
+    border-color: #202020;
+}
+
+body.dark-mode th {
+    background: #151515;
+    color: #999999;
+}
+
+body.dark-mode td {
+    border-color: #1b1b1b;
+}
+
+/* Servidores alternados solamente en modo oscuro */
+body.dark-mode tr.server-row:nth-child(odd) {
+    background: #0b0b0b;
+}
+
+body.dark-mode tr.server-row:nth-child(even) {
+    background: #151515;
+}
+
+body.dark-mode tr.server-row:hover {
+    background: #1c1c1c;
+}
+
+body.dark-mode .details-row {
+    background: #101010;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>
+    Plutonium Servers
+</h1>
+
+<button onclick="loadServers()">
+
+```
+Refresh Servers
+```
+
+</button>
+
+<button onclick="toggleDarkMode()" id="darkModeButton">
+
+```
+🌙 Dark Mode
+```
+
+</button>
+
+<div class="search-container">
+
+```
+<input
+    type="text"
+    id="searchInput"
+    placeholder="Search server, IP, map, country..."
+    onkeydown="handleSearchKey(event)"
+>
+
+
+<button onclick="searchServers()">
+
+    Search
+
+</button>
+
+
+<button onclick="clearSearch()">
+
+    Clear
+
+</button>
+```
+
+</div>
+
+<p id="status">
+
+```
+Loading servers...
+```
+
+</p>
+
+<div id="servers"></div>
+
+<script>
+
+
+    /*
+     * =====================================================
+     * APIs FOR ALL GAMES
+     * =====================================================
+     */
+
+
+    const API_URLS = [
+
+        // Black Ops II
+        "https://gameserve.rs/api/v1/servers?platform=plutonium&game=T6&limit=500",
+
+        // Black Ops II Zombies
+        "https://gameserve.rs/api/v1/servers?platform=plutonium&game=T6ZM&limit=500",
+
+        // Modern Warfare 3
+        "https://gameserve.rs/api/v1/servers?platform=plutonium&game=IW5&limit=500",
+
+        // World at War
+        "https://gameserve.rs/api/v1/servers?platform=plutonium&game=T4&limit=500",
+
+        // World at War Zombies
+        "https://gameserve.rs/api/v1/servers?platform=plutonium&game=T4ZM&limit=500",
+
+        // Black Ops
+        "https://gameserve.rs/api/v1/servers?platform=plutonium&game=T5&limit=500",
+
+        // Black Ops Zombies
+        "https://gameserve.rs/api/v1/servers?platform=plutonium&game=T5ZM&limit=500"
+
+    ];
+
+
+    let allServers = [];
+
+
+    let currentSort = "players";
+
+
+    let sortDescending = true;
+
+
+    let expandedServerId = null;
+
+
+    /*
+     * =====================================================
+     * LOAD SEARCH QUERY FROM URL
+     * =====================================================
+     */
+
+
+    const urlParams =
+        new URLSearchParams(
+            window.location.search
+        );
+
+
+    let searchQuery =
+        (
+            urlParams.get("q") || ""
+        )
+            .trim()
+            .toLowerCase();
+
+
+    /*
+     * If a search query exists in the URL,
+     * display it inside the input field.
+     */
+
+
+    window.addEventListener(
+        "DOMContentLoaded",
+        () => {
+
+            const input =
+                document.getElementById(
+                    "searchInput"
+                );
+
+
+            if (input) {
+
+                input.value =
+                    searchQuery;
+
+            }
+
+        }
+    );
+
+
+    /*
+     * =====================================================
+     * LOAD ALL SERVERS
+     * =====================================================
+     */
+
+
+    async function loadServers() {
+
+
+        const status =
+            document.getElementById(
+                "status"
+            );
+
+
+        status.textContent =
+            "Loading servers...";
+
+
+        try {
+
+
+            /*
+             * Query all games in parallel.
+             */
+
+
+            const responses =
+                await Promise.all(
+
+                    API_URLS.map(
+                        url =>
+                            fetch(url)
+                    )
+
+                );
+
+
+            /*
+             * Check the responses.
+             */
+
+
+            responses.forEach(
+
+                response => {
+
+
+                    if (!response.ok) {
+
+
+                        throw new Error(
+
+                            "HTTP " +
+                            response.status
+
+                        );
+
+                    }
+
+                }
+
+            );
+
+
+            /*
+             * Convert all responses to JSON.
+             */
+
+
+            const results =
+                await Promise.all(
+
+                    responses.map(
+
+                        response =>
+                            response.json()
+
+                    )
+
+                );
+
+
+            /*
+             * Extract servers.
+             *
+             * Filter undefined/null values
+             * to prevent errors such as:
+             *
+             * Cannot read properties of undefined
+             */
+
+
+            allServers =
+                results.flatMap(
+
+                    result => {
+
+
+                        if (
+
+                            result &&
+                            result.success &&
+                            result.data &&
+                            Array.isArray(
+                                result.data.servers
+                            )
+
+                        ) {
+
+
+                            return result.data.servers
+
+                                .filter(
+
+                                    server =>
+                                        server != null
+
+                                );
+
+                        }
+
+
+                        return [];
+
+                    }
+
+                );
+
+
+            /*
+             * Remove duplicate servers.
+             */
+
+
+            const uniqueServers =
+                new Map();
+
+
+            allServers
+
+                .filter(
+                    server =>
+                        server != null
+                )
+
+                .forEach(
+
+                    server => {
+
+
+                        const serverId =
+
+                            server.id ||
+
+                            server.address ||
+
+                            (
+
+                                server.ip &&
+                                server.port
+
+                                    ?
+
+                                `${server.ip}:${server.port}`
+
+                                    :
+
+                                null
+
+                            );
+
+
+                        if (serverId) {
+
+
+                            uniqueServers.set(
+
+                                serverId,
+
+                                server
+
+                            );
+
+                        }
+
+                    }
+
+                );
+
+
+            allServers =
+                Array.from(
+
+                    uniqueServers.values()
+
+                );
+
+
+            /*
+             * Calculate total players.
+             */
+
+
+            const totalPlayers =
+                allServers.reduce(
+
+                    (total, server) => {
+
+
+                        return total +
+
+                            Number(
+
+                                server?.players?.current ||
+
+                                0
+
+                            );
+
+                    },
+
+                    0
+
+                );
+
+
+            /*
+             * Update status.
+             */
+
+
+            status.textContent =
+
+                allServers.length +
+
+                " servers | " +
+
+                totalPlayers +
+
+                " players online | " +
+
+                "Updated: " +
+
+                new Date()
+                    .toLocaleTimeString();
+
+
+            /*
+             * Render servers.
+             */
+
+
+            renderServers();
+
+
+        }
+
+        catch (error) {
+
+
+            console.error(error);
+
+
+            status.innerHTML =
+
+                `
+
+                <span class="error">
+
+                    Error loading servers:
+
+                    ${escapeHtml(
+
+                        error?.message ||
+
+                        "Unknown error"
+
+                    )}
+
+                </span>
+
+                `;
+
+        }
+
+    }
+
+
+    /*
+     * =====================================================
+     * RENDER SERVERS
+     * =====================================================
+     */
+
+
+    function renderServers() {
+
+
+        const container =
+            document.getElementById(
+                "servers"
+            );
+
+
+        container.innerHTML =
+            "";
+
+
+        /*
+         * Filter according to the search query.
+         */
+
+
+        const filteredServers =
+
+            searchQuery
+
+                ?
+
+            allServers.filter(
+
+                server => {
+
+
+                    if (!server) {
+
+                        return false;
+
+                    }
+
+
+                    const searchableText = [
+
+                        server.name,
+
+                        server.ip,
+
+                        server.address,
+
+                        server.map?.display,
+
+                        server.map?.raw,
+
+                        server.mode?.display,
+
+                        server.mode?.raw,
+
+                        server.location?.countryName,
+
+                        server.location?.countryCode,
+
+                        server.game?.name,
+
+                        server.game?.id
+
+                    ]
+
+                        .filter(Boolean)
+
+                        .join(" ")
+
+                        .toLowerCase();
+
+
+                    return searchableText.includes(
+
+                        searchQuery
+
+                    );
+
+                }
+
+            )
+
+                :
+
+            allServers;
+
+
+        /*
+         * Group servers by game.
+         */
+
+
+        const games = {};
+
+
+        filteredServers
+
+            .filter(
+                server =>
+                    server != null
+            )
+
+            .forEach(
+
+                server => {
+
+
+                    const gameId =
+
+                        server.game?.id ||
+
+                        "UNKNOWN";
+
+
+                    const gameName =
+
+                        server.game?.name ||
+
+                        "Unknown Game";
+
+
+                    if (!games[gameId]) {
+
+
+                        games[gameId] = {
+
+
+                            name:
+                                gameName,
+
+
+                            servers:
+                                []
+
+                        };
+
+                    }
+
+
+                    games[gameId]
+
+                        .servers
+
+                        .push(server);
+
+                }
+
+            );
+
+
+        /*
+         * Render each game.
+         */
+
+
+        Object.values(games)
+
+            .forEach(
+
+                game => {
+
+
+                    renderGame(
+
+                        game,
+
+                        container
+
+                    );
+
+                }
+
+            );
+
+
+        /*
+         * Display a message if there are no results.
+         */
+
+
+        if (
+
+            filteredServers.length ===
+
+            0
+
+        ) {
+
+
+            container.innerHTML =
+
+                `
+
+                <div class="no-results">
+
+                    No servers found.
+
+                </div>
+
+                `;
+
+        }
+
+    }
+
+
+    /*
+     * =====================================================
+     * RENDER A GAME
+     * =====================================================
+     */
+
+
+    function renderGame(
+
+        game,
+
+        container
+
+    ) {
+
+
+        const gameElement =
+
+            document.createElement(
+
+                "div"
+
+            );
+
+
+        gameElement.className =
+            "game";
+
+
+        const gameTitle =
+
+            document.createElement(
+
+                "h2"
+
+            );
+
+
+        gameTitle.className =
+            "game-title";
+
+
+        gameTitle.textContent =
+
+            game.name +
+
+            " - " +
+
+            game.servers.length +
+
+            " servers";
+
+
+        gameElement.appendChild(
+
+            gameTitle
+
+        );
+
+
+        const tableContainer =
+
+            document.createElement(
+
+                "div"
+
+            );
+
+
+        tableContainer.className =
+
+            "table-container";
+
+
+        const table =
+
+            document.createElement(
+
+                "table"
+
+            );
+
+
+        const thead =
+
+            document.createElement(
+
+                "thead"
+
+            );
+
+
+        thead.innerHTML = `
+
+
+            <tr>
+
+
+                <th onclick="sortByCountry()">
+
+
+                    Country
+
+
+                    ${
+
+                        currentSort ===
+
+                        "country"
+
+                            ?
+
+                        `
+
+                            <span class="sort-arrow">
+
+                                ${
+
+                                    sortDescending
+
+                                        ?
+
+                                    "▼"
+
+                                        :
+
+                                    "▲"
+
+                                }
+
+                            </span>
+
+                        `
+
+                            :
+
+                        ""
+
+                    }
+
+
+                </th>
+
+
+                <th>
+
+
+                    Server
+
+
+                </th>
+
+
+                <th onclick="sortByPlayers()">
+
+
+                    Players
+
+
+                    ${
+
+                        currentSort ===
+
+                        "players"
+
+                            ?
+
+                        `
+
+                            <span class="sort-arrow">
+
+                                ${
+
+                                    sortDescending
+
+                                        ?
+
+                                    "▼"
+
+                                        :
+
+                                    "▲"
+
+                                }
+
+                            </span>
+
+                        `
+
+                            :
+
+                        ""
+
+                    }
+
+
+                </th>
+
+
+                <th>
+
+
+                    Map
+
+
+                </th>
+
+
+                <th>
+
+
+                    Mode
+
+
+                </th>
+
+
+            </tr>
+
+
+        `;
+
+
+        table.appendChild(
+
+            thead
+
+        );
+
+
+        const tbody =
+
+            document.createElement(
+
+                "tbody"
+
+            );
+
+
+        const sortedServers =
+
+            [...game.servers]
+
+                .sort(
+
+                    sortServers
+
+                );
+
+
+        sortedServers.forEach(
+
+            server => {
+
+
+                if (!server) {
+
+                    return;
+
+                }
+
+
+                const serverId =
+
+                    server.id ||
+
+                    server.address ||
+
+                    (
+
+                        server.ip &&
+
+                        server.port
+
+                            ?
+
+                        `${server.ip}:${server.port}`
+
+                            :
+
+                        Math.random()
+
+                    );
+
+
+                const players =
+
+                    server.players ||
+
+                    {};
+
+
+                const currentPlayers =
+
+                    Number(
+
+                        players.current ||
+
+                        0
+
+                    );
+
+
+                const maxPlayers =
+
+                    Number(
+
+                        players.max ||
+
+                        0
+
+                    );
+
+
+                const country =
+
+                    server.location?.countryName ||
+
+                    server.location?.countryCode ||
+
+                    "Unknown";
+
+
+                const row =
+
+                    document.createElement(
+
+                        "tr"
+
+                    );
+
+
+                row.className =
+
+                    "server-row";
+
+
+                row.onclick =
+
+                    () => {
+
+
+                        toggleServer(
+
+                            serverId
+
+                        );
+
+                    };
+
+
+                row.innerHTML = `
+
+
+                    <td class="country">
+
+
+                        ${escapeHtml(
+
+                            country
+
+                        )}
+
+
+                    </td>
+
+
+                    <td class="server-name">
+
+
+                        ${escapeHtml(
+
+                            server.name ||
+
+                            "Unknown Server"
+
+                        )}
+
+
+                    </td>
+
+
+                    <td class="players-count">
+
+
+                        ${currentPlayers}
+
+                        /
+
+                        ${maxPlayers}
+
+
+                    </td>
+
+
+                    <td>
+
+
+                        ${escapeHtml(
+
+                            server.map?.display ||
+
+                            server.map?.raw ||
+
+                            "Unknown"
+
+                        )}
+
+
+                    </td>
+
+
+                    <td>
+
+
+                        ${escapeHtml(
+
+                            server.mode?.display ||
+
+                            server.mode?.raw ||
+
+                            "Unknown"
+
+                        )}
+
+
+                    </td>
+
+
+                `;
+
+
+                tbody.appendChild(
+
+                    row
+
+                );
+
+
+                if (
+
+                    expandedServerId ===
+
+                    serverId
+
+                ) {
+
+
+                    const detailsRow =
+
+                        createDetailsRow(
+
+                            server
+
+                        );
+
+
+                    tbody.appendChild(
+
+                        detailsRow
+
+                    );
+
+                }
+
+            }
+
+        );
+
+
+        table.appendChild(
+
+            tbody
+
+        );
+
+
+        tableContainer.appendChild(
+
+            table
+
+        );
+
+
+        gameElement.appendChild(
+
+            tableContainer
+
+        );
+
+
+        container.appendChild(
+
+            gameElement
+
+        );
+
+    }
+
+
+    /*
+     * =====================================================
+     * SORT SERVERS
+     * =====================================================
+     */
+
+
+    function sortServers(
+
+        a,
+
+        b
+
+    ) {
+
+
+        if (
+
+            !a ||
+
+            !b
+
+        ) {
+
+            return 0;
+
+        }
+
+
+        if (
+
+            currentSort ===
+
+            "country"
+
+        ) {
+
+
+            const countryA =
+
+                (
+
+                    a.location?.countryName ||
+
+                    a.location?.countryCode ||
+
+                    "Unknown"
+
+                )
+
+                    .toLowerCase();
+
+
+            const countryB =
+
+                (
+
+                    b.location?.countryName ||
+
+                    b.location?.countryCode ||
+
+                    "Unknown"
+
+                )
+
+                    .toLowerCase();
+
+
+            const result =
+
+                countryA.localeCompare(
+
+                    countryB
+
+                );
+
+
+            return sortDescending
+
+                ?
+
+                -result
+
+                :
+
+                result;
+
+        }
+
+
+        if (
+
+            currentSort ===
+
+            "players"
+
+        ) {
+
+
+            const playersA =
+
+                Number(
+
+                    a.players?.current ||
+
+                    0
+
+                );
+
+
+            const playersB =
+
+                Number(
+
+                    b.players?.current ||
+
+                    0
+
+                );
+
+
+            return sortDescending
+
+                ?
+
+                playersB - playersA
+
+                :
+
+                playersA - playersB;
+
+        }
+
+
+        return 0;
+
+    }
+
+
+    /*
+     * =====================================================
+     * SORT BY COUNTRY
+     * =====================================================
+     */
+
+
+    function sortByCountry() {
+
+
+        if (
+
+            currentSort ===
+
+            "country"
+
+        ) {
+
+
+            sortDescending =
+
+                !sortDescending;
+
+        }
+
+        else {
+
+
+            currentSort =
+
+                "country";
+
+
+            sortDescending =
+
+                false;
+
+        }
+
+
+        renderServers();
+
+    }
+
+
+    /*
+     * =====================================================
+     * SORT BY PLAYERS
+     * =====================================================
+     */
+
+
+    function sortByPlayers() {
+
+
+        if (
+
+            currentSort ===
+
+            "players"
+
+        ) {
+
+
+            sortDescending =
+
+                !sortDescending;
+
+        }
+
+        else {
+
+
+            currentSort =
+
+                "players";
+
+
+            sortDescending =
+
+                true;
+
+        }
+
+
+        renderServers();
+
+    }
+
+
+    /*
+     * =====================================================
+     * SEARCH
+     * =====================================================
+     */
+
+
+    function handleSearchKey(
+
+        event
+
+    ) {
+
+
+        if (
+
+            event.key ===
+
+            "Enter"
+
+        ) {
+
+
+            searchServers();
+
+        }
+
+    }
+
+
+    function searchServers() {
+
+
+        const input =
+
+            document.getElementById(
+
+                "searchInput"
+
+            );
+
+
+        const query =
+
+            input.value
+
+                .trim()
+
+                .toLowerCase();
+
+
+        searchQuery =
+
+            query;
+
+
+        const url =
+
+            new URL(
+
+                window.location.href
+
+            );
+
+
+        if (query) {
+
+
+            url.searchParams.set(
+
+                "q",
+
+                query
+
+            );
+
+        }
+
+        else {
+
+
+            url.searchParams.delete(
+
+                "q"
+
+            );
+
+        }
+
+
+        window.history.pushState(
+
+            {},
+
+            "",
+
+            url
+
+        );
+
+
+        expandedServerId =
+
+            null;
+
+
+        renderServers();
+
+    }
+
+
+    function clearSearch() {
+
+
+        const input =
+
+            document.getElementById(
+
+                "searchInput"
+
+            );
+
+
+        input.value =
+
+            "";
+
+
+        searchQuery =
+
+            "";
+
+
+        const url =
+
+            new URL(
+
+                window.location.href
+
+            );
+
+
+        url.searchParams.delete(
+
+            "q"
+
+        );
+
+
+        window.history.pushState(
+
+            {},
+
+            "",
+
+            url
+
+        );
+
+
+        expandedServerId =
+
+            null;
+
+
+        renderServers();
+
+    }
+
+
+    /*
+     * =====================================================
+     * EXPAND SERVER
+     * =====================================================
+     */
+
+
+    function toggleServer(
+
+        serverId
+
+    ) {
+
+
+        if (
+
+            expandedServerId ===
+
+            serverId
+
+        ) {
+
+
+            expandedServerId =
+
+                null;
+
+        }
+
+        else {
+
+
+            expandedServerId =
+
+                serverId;
+
+        }
+
+
+        renderServers();
+
+    }
+
+
+    /*
+     * =====================================================
+     * SERVER DETAILS
+     * =====================================================
+     */
+
+
+    function createDetailsRow(
+
+        server
+
+    ) {
+
+
+        const row =
+
+            document.createElement(
+
+                "tr"
+
+            );
+
+
+        row.className =
+
+            "details-row";
+
+
+        const cell =
+
+            document.createElement(
+
+                "td"
+
+            );
+
+
+        cell.colSpan =
+
+            5;
+
+
+        const details =
+
+            document.createElement(
+
+                "div"
+
+            );
+
+
+        details.className =
+
+            "details";
+
+
+        const players =
+
+            server.players ||
+
+            {};
+
+
+        details.innerHTML = `
+
+
+            <h3>
+
+
+                ${escapeHtml(
+
+                    server.name ||
+
+                    "Unknown Server"
+
+                )}
+
+
+            </h3>
+
+
+            <p>
+
+
+                <strong>Address:</strong>
+
+
+                ${escapeHtml(
+
+                    server.address ||
+
+                    (
+
+                        server.ip &&
+
+                        server.port
+
+                            ?
+
+                        `${server.ip}:${server.port}`
+
+                            :
+
+                        "Unknown"
+
+                    )
+
+                )}
+
+
+            </p>
+
+
+            <p>
+
+
+                <strong>Players:</strong>
+
+
+                ${players.current || 0}
+
+                /
+
+                ${players.max || 0}
+
+
+            </p>
+
+
+        `;
+
+
+        cell.appendChild(
+
+            details
+
+        );
+
+
+        row.appendChild(
+
+            cell
+
+        );
+
+
+        return row;
+
+    }
+
+
+    /*
+     * =====================================================
+     * DARK MODE
+     * =====================================================
+     */
+
+
+    function toggleDarkMode() {
+
+
+        document.body.classList.toggle(
+
+            "dark-mode"
+
+        );
+
+
+        const enabled =
+
+            document.body.classList.contains(
+
+                "dark-mode"
+
+            );
+
+
+        localStorage.setItem(
+
+            "darkMode",
+
+            enabled ? "yes" : "no"
+
+        );
+
+
+        document.getElementById(
+
+            "darkModeButton"
+
+        ).textContent =
+
+            enabled
+
+                ?
+
+            "☀️ Light Mode"
+
+                :
+
+            "🌙 Dark Mode";
+
+    }
+
+
+    function loadDarkMode() {
+
+
+        if (
+
+            localStorage.getItem(
+
+                "darkMode"
+
+            ) === "yes"
+
+        ) {
+
+
+            document.body.classList.add(
+
+                "dark-mode"
+
+            );
+
+
+            document.getElementById(
+
+                "darkModeButton"
+
+            ).textContent =
+
+                "☀️ Light Mode";
+
+        }
+
+    }
+
+
+    /*
+     * =====================================================
+     * ESCAPE HTML
+     * =====================================================
+     */
+
+
+    function escapeHtml(
+
+        text
+
+    ) {
+
+
+        const div =
+
+            document.createElement(
+
+                "div"
+
+            );
+
+
+        div.textContent =
+
+            String(
+
+                text ??
+
+                ""
+
+            );
+
+
+        return div.innerHTML;
+
+    }
+
+
+    /*
+     * =====================================================
+     * START
+     * =====================================================
+     */
+
+
+    loadDarkMode();
+
+
+    loadServers();
+
+
+    setInterval(
+
+        loadServers,
+
+        30000
+
+    );
+
+
+</script>
+
+</body>
+
+</html>
