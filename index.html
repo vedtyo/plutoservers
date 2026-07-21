@@ -103,17 +103,16 @@
     tr.server-row {
         cursor: pointer;
     }
-	
-	/* Servidores alternados en modo claro */
 
-tr.server-row:nth-child(odd) {
-    background: #e8e8e8;
-}
+    /* Servidores alternados en modo claro */
 
-tr.server-row:nth-child(even) {
-    background: #ffffff;
-}
-	
+    tr.server-row:nth-child(odd) {
+        background: #e8e8e8;
+    }
+
+    tr.server-row:nth-child(even) {
+        background: #ffffff;
+    }
 
     tr.server-row:hover {
         background: #f4f4f4;
@@ -162,56 +161,137 @@ tr.server-row:nth-child(even) {
         color: #777;
     }
 
-   body.dark-mode {
-    background: #0b0b0b;
-    color: #b0b0b0;
-}
+    body.dark-mode {
+        background: #0b0b0b;
+        color: #b0b0b0;
+    }
 
-body.dark-mode button {
-    background: #111111;
-    color: #999999;
-    border-color: #252525;
-}
+    body.dark-mode button {
+        background: #111111;
+        color: #999999;
+        border-color: #252525;
+    }
 
-body.dark-mode button:hover {
-    background: #1a1a1a;
-}
+    body.dark-mode button:hover {
+        background: #1a1a1a;
+    }
 
-body.dark-mode .game {
-    background: #0b0b0b;
-    border-color: #1c1c1c;
-}
+    body.dark-mode .game {
+        background: #0b0b0b;
+        border-color: #1c1c1c;
+    }
 
-body.dark-mode .game-title {
-    background: #111111;
-    border-color: #202020;
-}
+    body.dark-mode .game-title {
+        background: #111111;
+        border-color: #202020;
+    }
 
-body.dark-mode th {
-    background: #151515;
-    color: #999999;
-}
+    body.dark-mode th {
+        background: #151515;
+        color: #999999;
+    }
 
-body.dark-mode td {
-    border-color: #1b1b1b;
-}
+    body.dark-mode td {
+        border-color: #1b1b1b;
+    }
 
-/* Servidores alternados solamente en modo oscuro */
-body.dark-mode tr.server-row:nth-child(odd) {
-    background: #0b0b0b;
-}
+    /* Servidores alternados solamente en modo oscuro */
 
-body.dark-mode tr.server-row:nth-child(even) {
-    background: #151515;
-}
+    body.dark-mode tr.server-row:nth-child(odd) {
+        background: #0b0b0b;
+    }
 
-body.dark-mode tr.server-row:hover {
-    background: #1c1c1c;
-}
+    body.dark-mode tr.server-row:nth-child(even) {
+        background: #151515;
+    }
 
-body.dark-mode .details-row {
-    background: #101010;
-}
+    body.dark-mode tr.server-row:hover {
+        background: #1c1c1c;
+    }
+
+    body.dark-mode .details-row {
+        background: #101010;
+    }
+
+
+    /* =========================
+       ADAPTACIÓN PARA MÓVILES
+    ========================== */
+
+    @media (max-width: 600px) {
+
+        body {
+            padding: 10px;
+        }
+
+        h1 {
+            font-size: 24px;
+        }
+
+        #status {
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        button {
+            padding: 9px 12px;
+            font-size: 14px;
+        }
+
+        .search-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .search-container input {
+            width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+
+        .search-container button {
+            width: 100%;
+        }
+
+        .game {
+            margin-bottom: 20px;
+        }
+
+        .game-title {
+            padding: 12px;
+            font-size: 18px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            min-width: 650px;
+        }
+
+        th,
+        td {
+            padding: 9px 10px;
+            font-size: 13px;
+        }
+
+        .details {
+            padding: 12px 15px;
+            font-size: 14px;
+        }
+
+        .details h3 {
+            font-size: 17px;
+        }
+
+        .no-results {
+            padding: 15px;
+        }
+
+    }
 
 </style>
 
@@ -225,23 +305,23 @@ body.dark-mode .details-row {
 
 <button onclick="loadServers()">
 
-```
+
 Refresh Servers
-```
+
 
 </button>
 
 <button onclick="toggleDarkMode()" id="darkModeButton">
 
-```
+
 🌙 Dark Mode
-```
+
 
 </button>
 
 <div class="search-container">
 
-```
+
 <input
     type="text"
     id="searchInput"
@@ -249,28 +329,26 @@ Refresh Servers
     onkeydown="handleSearchKey(event)"
 >
 
-
 <button onclick="searchServers()">
 
     Search
 
 </button>
 
-
 <button onclick="clearSearch()">
 
     Clear
 
 </button>
-```
+
 
 </div>
 
 <p id="status">
 
-```
+
 Loading servers...
-```
+
 
 </p>
 
@@ -458,11 +536,6 @@ Loading servers...
 
             /*
              * Extract servers.
-             *
-             * Filter undefined/null values
-             * to prevent errors such as:
-             *
-             * Cannot read properties of undefined
              */
 
 
