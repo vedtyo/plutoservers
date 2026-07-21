@@ -165,30 +165,6 @@
         color: #777;
     }
 
-    /* COPY BUTTON */
-
-    .copy-button {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 24px;
-        height: 24px;
-        padding: 0;
-        margin-left: 6px;
-        vertical-align: middle;
-        background: transparent;
-        border: 1px solid #aaa;
-        border-radius: 4px;
-        color: #777;
-        font-size: 14px;
-        line-height: 1;
-        cursor: pointer;
-    }
-
-    .copy-button:hover {
-        background: #e8e8e8;
-    }
-
     body.dark-mode {
         background: #0b0b0b;
         color: #b0b0b0;
@@ -239,14 +215,25 @@
         background: #101010;
     }
 
-    body.dark-mode .copy-button {
-        background: transparent;
-        color: #888888;
-        border-color: #333333;
+    .copy-button {
+        margin-left: 8px;
+        padding: 3px 7px;
+        font-size: 12px;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.08);
+        color: #999999;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        cursor: pointer;
+        transition: 0.2s;
     }
 
-    body.dark-mode .copy-button:hover {
-        background: #1a1a1a;
+    .copy-button:hover {
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .copy-button.copied {
+        color: #8bc34a;
+        border-color: rgba(139, 195, 74, 0.4);
     }
 
     @media (max-width: 600px) {
@@ -353,7 +340,6 @@ type="text"
 id="searchInput"
 placeholder="Search server, IP, map, country..."
 onkeydown="handleSearchKey(event)"
-
 >
 
 <button onclick="searchServers()">
@@ -1765,11 +1751,6 @@ Loading servers...
             );
 
 
-        const connectCommand =
-
-            `connect ${address}`;
-
-
         details.innerHTML = `
 
             <h3>
@@ -1790,24 +1771,20 @@ Loading servers...
                 <strong>Connect:</strong>
 
 
-                ${escapeHtml(
-
-                    address
-
-                )}
+                ${escapeHtml(address)}
 
 
                 <button
 
                     class="copy-button"
 
-                    title="Copy connect command"
+                    onclick="copyConnectCommand(event, '${escapeHtml(address)}')"
 
-                    onclick="copyConnectCommand(event, '${escapeHtml(connectCommand)}', this)"
+                    title="Copy connection command"
 
                 >
 
-                    📋
+                    ⧉
 
                 </button>
 
@@ -1853,59 +1830,64 @@ Loading servers...
 
         event,
 
-        command,
-
-        button
+        address
 
     ) {
 
         event.stopPropagation();
 
 
+        const command =
+
+            "connect " +
+
+            address;
+
+
         navigator.clipboard.writeText(
 
             command
 
-        )
-
-            .then(
-
-                () => {
-
-                    button.textContent = "✓";
+        );
 
 
-                    setTimeout(
+        const button =
 
-                        () => {
+            event.currentTarget;
 
-                            button.textContent = "📋";
 
-                        },
+        button.textContent =
 
-                        1500
+            "✓";
 
-                    );
 
-                }
+        button.classList.add(
 
-            )
+            "copied"
 
-            .catch(
+        );
 
-                error => {
 
-                    console.error(
+        setTimeout(
 
-                        "Copy failed:",
+            () => {
 
-                        error
+                button.textContent =
 
-                    );
+                    "⧉";
 
-                }
 
-            );
+                button.classList.remove(
+
+                    "copied"
+
+                );
+
+            },
+
+            1500
+
+        );
 
     }
 
@@ -1958,13 +1940,20 @@ Loading servers...
 
     function loadDarkMode() {
 
-        if (
+        const savedMode =
 
             localStorage.getItem(
 
                 "darkMode"
 
-            ) === "yes"
+            );
+
+
+        if (
+
+            savedMode === null ||
+
+            savedMode === "yes"
 
         ) {
 
@@ -2032,7 +2021,6 @@ Loading servers...
         30000
 
     );
-
 
 </script>
 
