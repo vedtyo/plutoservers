@@ -854,11 +854,17 @@ async function loadServers() {
 
             " players online | " +
 
-            "Updated: " +
+ 
 
-            new Date()
-
-                .toLocaleTimeString();
+"Last updated on " +
+new Date().toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true
+});
 
         renderGameButtons();
 
