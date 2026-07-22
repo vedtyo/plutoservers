@@ -614,18 +614,6 @@ body.dark-mode .details-row {
 
     <div id="top-bar-buttons">
 
-        <button onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Scroll to top">
-            ↑ Top
-        </button>
-
-        <button onclick="loadServers()">
-            Refresh Servers
-        </button>
-
-        <button onclick="toggleDarkMode()" id="darkModeButton">
-            🌙 Dark Mode
-        </button>
-
         <button
         onclick="openStatusPage()"
         class="status-button"
@@ -633,6 +621,18 @@ body.dark-mode .details-row {
         aria-label="Plutonium Status"
         >
             <span class="status-icon"></span>
+        </button>
+
+        <button onclick="toggleDarkMode()" id="darkModeButton">
+            🌙
+        </button>
+
+        <button onclick="loadServers()">
+            Refresh
+        </button>
+
+        <button onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Scroll to top">
+            ↑ Top
         </button>
 
     </div>
@@ -914,7 +914,7 @@ async function loadServers() {
 
             );
 
-        status.textContent =
+        status.innerHTML =
 
             allServers.length +
 
@@ -922,11 +922,8 @@ async function loadServers() {
 
             totalPlayers +
 
-            " players online | " +
+            " players online<br>Last updated on<br>" +
 
- 
-
-"Last updated on " +
 new Date().toLocaleString("en-US", {
     month: "short",
     day: "numeric",
@@ -2637,11 +2634,11 @@ function toggleDarkMode() {
 
             ?
 
-        "☀️ Light Mode"
+        "☀️"
 
             :
 
-        "🌙 Dark Mode";
+        "🌙";
 
 }
 
@@ -2675,7 +2672,7 @@ function loadDarkMode() {
 
         ).textContent =
 
-            "☀️ Light Mode";
+            "☀️";
 
     }
 
