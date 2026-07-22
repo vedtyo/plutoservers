@@ -301,9 +301,11 @@ tr.server-row:hover {
 }
 
 .details {
-    padding: 15px 20px;
-    border-bottom: 1px solid #ccc;
+    padding: 10px 16px;
+    border-bottom:1px solid #ccc;
 }
+.details p{margin:4px 0;font-size:14px;}
+.details strong{font-weight:bold;}
 
 .details h3 {
     margin-top: 0;
@@ -2498,63 +2500,12 @@ function createDetailsRow(
         );
 
     details.innerHTML = `
-
-        <h3>
-
-            ${escapeHtml(
-
-                server.name ||
-
-                "Unknown Server"
-
-            )}
-
-        </h3>
-
-        <p>
-
-            <strong>
-                Connect:
-            </strong>
-
-            ${escapeHtml(address)}
-
-            <button
-
-                class="copy-button"
-
-                onclick="copyConnectCommand(
-
-                    event,
-
-                    '${escapeHtml(address)}'
-
-                )"
-
-                title="Copy connection command"
-
-            >
-
-                ⧉
-
-            </button>
-
-        </p>
-
-        <p>
-
-            <strong>
-                Players:
-            </strong>
-
-            ${players.current || 0}
-
-            /
-
-            ${players.max || 0}
-
-        </p>
-
+        <p><strong>Servername:</strong> ${escapeHtml(server.name || "Unknown Server")}</p>
+        <p><strong>Connect:</strong> ${escapeHtml(address)}
+        <button class="copy-button" onclick="copyConnectCommand(event,'${escapeHtml(address)}')" title="Copy connection command">⧉</button></p>
+        <p><strong>Players:</strong> ${players.current || 0} / ${players.max || 0}</p>
+        <p><strong>Map:</strong> ${escapeHtml(server.map?.display || server.map?.raw || "Unknown")}</p>
+        <p><strong>Mode:</strong> ${escapeHtml(server.mode?.display || server.mode?.raw || "Unknown")}</p>
     `;
 
     cell.appendChild(
