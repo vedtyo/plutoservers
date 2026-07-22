@@ -485,7 +485,13 @@ body.dark-mode .details-row {
 @media (max-width: 600px) {
 
     body {
-        padding: 10px;
+        padding: calc(env(safe-area-inset-top, 0px) + 10px) 10px 10px 10px;
+    }
+
+    #top-bar{
+        top: env(safe-area-inset-top, 0px);
+        padding-top: 18px;
+    }
     }
 
     h1 {
