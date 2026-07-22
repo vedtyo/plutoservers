@@ -22,6 +22,10 @@ body {
     background: #f2f2f2;
     color: #222;
     margin: 0;
+    padding: 0;
+}
+
+#page-content {
     padding: 20px;
 }
 
@@ -38,7 +42,6 @@ h1 {
     align-items: center;
     justify-content: space-between;
     background: #f2f2f2;
-    margin: -20px -20px 20px -20px;
     padding: 18px 24px;
     border-bottom: 1px solid #ccc;
 }
@@ -65,11 +68,6 @@ h1 {
     gap: 6px;
     flex-shrink: 0;
     margin-left: 20px;
-}
-
-#status {
-    margin: 10px 0 20px 0;
-    color: #555;
 }
 
 button {
@@ -503,12 +501,11 @@ body.dark-mode .details-row {
 
 @media (max-width: 600px) {
 
-    body {
+    #page-content {
         padding: 10px;
     }
 
     #top-bar {
-        margin: -10px -10px 15px -10px;
         padding: 14px 16px;
     }
 
@@ -648,6 +645,8 @@ body.dark-mode .details-row {
     </div>
 
 </div>
+
+<div id="page-content">
 
 <!-- BOTONES DE JUEGOS -->
 
@@ -2787,6 +2786,8 @@ setInterval(
 );
 
 </script>
+
+</div>
 
 </body>
 
