@@ -1,0 +1,2791 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Plutonium Servers</title>
+
+    <meta name="google-site-verification" content="CBrCLwQWx7B6SsjaUSoG34QsmkRk4fhPTcYjsXTT8KY">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0XJM4EP2XP"></script>
+
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-0XJM4EP2XP');
+    </script>
+
+</head>
+
+<meta name="description" content="Browse live Plutonium game servers for Black Ops II, Modern Warfare 3, World at War and Black Ops. View players, maps, game modes and server information.">
+
+<meta name="robots" content="index, follow">
+
+<style>
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f2f2f2;
+    color: #222;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+#top-bar {
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f2f2f2;
+    margin: -20px -20px 20px -20px;
+    padding: 15px 20px;
+    border-bottom: 1px solid #ccc;
+}
+
+#top-bar-buttons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+#status {
+    margin: 4px 0 0 0;
+    font-size:12px;
+    color:#777;
+}
+
+button {
+    padding: 8px 14px;
+    cursor: pointer;
+    background: white;
+    border: 1px solid #aaa;
+    border-radius: 0;
+}
+
+button:hover {
+    background: #e8e8e8;
+}
+
+/* =========================
+   BOTÓN STATUS
+========================= */
+
+.status-button {
+    width: 36px;
+    height: 35px;
+    padding: 0;
+    margin-left: 4px;
+    cursor: pointer;
+    background: white;
+    border: 1px solid #aaa;
+    border-radius: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    position: relative;
+    top: -1.5px;
+}
+
+.status-button:hover {
+    background: #e8e8e8;
+}
+
+/* ÍCONO TIPO ESTADÍSTICAS */
+
+.status-icon {
+    width: 19px;
+    height: 19px;
+    position: relative;
+    display: block;
+}
+
+.status-icon::before {
+    content: "";
+    position: absolute;
+    left: 1px;
+    right: 1px;
+    top: 9px;
+    height: 1px;
+    background: #777;
+    transform: rotate(-28deg);
+    transform-origin: center;
+}
+
+.status-icon::after {
+    content: "";
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    left: 2px;
+    top: 10px;
+    border: 1px solid #777;
+    border-radius: 50%;
+    box-sizing: border-box;
+    box-shadow:
+        5px -5px 0 -1px white,
+        5px -5px 0 0 #777,
+        10px -1px 0 -1px white,
+        10px -1px 0 0 #777;
+}
+
+/* =========================
+   BOTONES DE JUEGOS
+========================= */
+
+.game-buttons {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin: 10px 0 18px 0;
+}
+
+.game-button {
+    padding: 6px 10px;
+    font-size: 12px;
+    line-height: 1.2;
+    background: white;
+    border: 1px solid #aaa;
+    border-radius: 0;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.game-button strong {
+    display: block;
+    font-size: 12px;
+}
+
+.game-button small {
+    display: block;
+    font-size: 10px;
+    color: #666;
+    margin-top: 2px;
+}
+
+.game-button:hover {
+    background: #e8e8e8;
+}
+
+.game-button.active {
+    background: #dedede;
+    border-color: #777;
+}
+
+/* ========================= */
+
+.search-container {
+    display: flex;
+    gap: 8px;
+    margin: 15px 0 20px 0;
+    flex-wrap: wrap;
+}
+
+.search-container input {
+    padding: 8px 12px;
+    min-width: 280px;
+    border: 1px solid #aaa;
+    font-size: 14px;
+}
+
+.search-container input:focus {
+    outline: none;
+    border-color: #555;
+}
+
+.game {
+    background: white;
+    border: 1px solid #ccc;
+    margin-bottom: 30px;
+}
+
+.game-title {
+    padding: 15px;
+    margin: 0;
+    border-bottom: 1px solid #ccc;
+    background: #ffffff;
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+    table-layout: fixed;
+}
+
+th:nth-child(1), td:nth-child(1) { width: 5%; }
+th:nth-child(2), td.server-name     { width: 43%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+th:nth-child(3), td.players-count   { width: 10%; }
+th:nth-child(4), td:nth-child(4)    { width: 23%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+th:nth-child(5), td:nth-child(5)    { width: 19%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+th {
+    background: #ffffff;
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+    user-select: none;
+}
+
+th:hover {
+    background: #f0f0f0;
+}
+
+td {
+    padding: 11px 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+tr.server-row {
+    cursor: pointer;
+}
+
+tr.server-row:nth-child(odd) {
+    background: #ffffff;
+}
+
+tr.server-row:nth-child(even) {
+    background: #ffffff;
+}
+
+tr.server-row:hover {
+    background: #f4f4f4;
+}
+
+.server-name {
+    font-weight: bold;
+}
+
+.players-count {
+    font-weight:bold;
+    white-space:nowrap;
+    text-align:left;
+}
+.player-box{
+    display:inline-block;
+    min-width:72px;      /* ancho del rectángulo */
+    padding:5px 10px;    /* alto y ancho interno */
+
+    text-align:center;
+
+    border:1px solid;
+    border-radius:0;
+
+    font-weight:bold;
+    font-size:15px;      /* tamaño de los números */
+
+    background:rgba(255,255,255,.05);
+
+    box-sizing:border-box;
+}
+.player-empty{color:#8b8b8b;border-color:rgba(140,140,140,.45);background:rgba(140,140,140,.08);}
+.player-low{color:#d8b64d;border-color:rgba(216,182,77,.55);background:rgba(216,182,77,.08);}
+.player-medium{color:#59d36d;border-color:rgba(89,211,109,.55);background:rgba(89,211,109,.08);}
+.player-full{color:#ff6464;border-color:rgba(255,100,100,.60);background:rgba(255,100,100,.08);}
+
+.country {
+    white-space: nowrap;
+    font-size: 24px;
+    line-height: 1;
+}
+
+.country-flag {
+    width: 32px;
+    height: auto;
+    vertical-align: middle;
+    object-fit: contain;
+}
+
+.details-row {
+    background: #ffffff;
+}
+
+.details {
+    padding: 10px 16px;
+}
+.details p{margin:4px 0;font-size:14px;}
+.details strong{font-weight:bold;}
+
+.details h3 {
+    margin-top: 0;
+}
+
+.error {
+    color: red;
+    font-weight: bold;
+}
+
+.sort-arrow {
+    font-size: 11px;
+    margin-left: 5px;
+}
+
+th:nth-child(3) {
+    text-align: left;
+}
+
+.no-results {
+    padding: 20px;
+    background: white;
+    border: 1px solid #ccc;
+    color: #777;
+}
+
+.expand-arrow {
+    display: inline-block;
+    width: 22px;
+    margin-right: 4px;
+    color: #777777;
+    font-size: 17px;
+    font-weight: normal;
+    text-align: center;
+}
+
+.expand-arrow.open {
+    color: #999999;
+}
+
+/* =========================
+   DARK MODE
+========================= */
+
+body.dark-mode {
+    background: #0b0b0b;
+    color: #b0b0b0;
+}
+
+body.dark-mode #top-bar {
+    background: #0b0b0b;
+    border-bottom-color: #1c1c1c;
+}
+
+body.dark-mode button {
+    background: #111111;
+    color: #999999;
+    border-color: #252525;
+}
+
+body.dark-mode button:hover {
+    background: #1a1a1a;
+}
+
+body.dark-mode .status-button {
+    background: #111111;
+    color: #999999;
+    border-color: #252525;
+}
+
+body.dark-mode .status-button:hover {
+    background: #1a1a1a;
+}
+
+body.dark-mode .status-icon::before {
+    background: #999999;
+}
+
+body.dark-mode .status-icon::after {
+    border-color: #999999;
+    box-shadow:
+        5px -5px 0 -1px #111111,
+        5px -5px 0 0 #999999,
+        10px -1px 0 -1px #111111,
+        10px -1px 0 0 #999999;
+}
+
+body.dark-mode .game-button {
+    background: #111111;
+    color: #999999;
+    border-color: #252525;
+}
+
+body.dark-mode .game-button:hover {
+    background: #1a1a1a;
+}
+
+body.dark-mode .game-button small {
+    color: #666666;
+}
+
+body.dark-mode .game-button.active {
+    background: #1c1c1c;
+    border-color: #555555;
+}
+
+body.dark-mode .search-container input {
+    background: #1a1a1a;
+    color: #b0b0b0;
+    border-color: #303030;
+}
+
+body.dark-mode .search-container input::placeholder {
+    color: #777777;
+}
+
+body.dark-mode .search-container input:focus {
+    border-color: #555555;
+    background: #202020;
+}
+
+body.dark-mode .game {
+    background: #0b0b0b;
+    border-color: #1c1c1c;
+}
+
+body.dark-mode .game-title {
+    background: #0b0b0b;
+    border-color: #1c1c1c;
+}
+
+body.dark-mode th {
+    background: #0b0b0b;
+    color: #999999;
+    border-bottom-color: #333333;
+}
+
+body.dark-mode td {
+    border-color: #1b1b1b;
+}
+
+body.dark-mode tr.server-row:nth-child(odd) {
+    background: #0b0b0b;
+}
+
+body.dark-mode tr.server-row:nth-child(even) {
+    background: #0b0b0b;
+}
+
+body.dark-mode tr.server-row:hover {
+    background: #111111;
+}
+
+body.dark-mode .details-row {
+    background: #0b0b0b;
+}
+
+.copy-button {
+    margin-left: 8px;
+    padding: 3px 7px;
+    font-size: 12px;
+    border-radius: 0;
+    background: rgba(255, 255, 255, 0.08);
+    color: #999999;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    cursor: pointer;
+}
+
+.copy-button:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.copy-button.copied {
+    color: #8bc34a;
+    border-color: rgba(139, 195, 74, 0.4);
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+
+    body {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    #status {
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    button {
+        padding: 9px 12px;
+        font-size: 14px;
+    }
+
+    #top-bar-buttons button {
+        padding: 0 8px;
+        font-size: 11px;
+        height: 34px;
+        line-height: 1;
+        white-space: nowrap;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+    }
+
+    .status-button {
+        width: 34px;
+        height: 34px;
+        padding: 0;
+        top: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+    }
+
+    .game-buttons {
+        gap: 5px;
+    }
+
+    .game-button {
+        padding: 5px 8px;
+        font-size: 11px;
+    }
+
+    .game-button strong {
+        font-size: 11px;
+    }
+
+    .game-button small {
+        font-size: 9px;
+    }
+
+    .search-container {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .search-container input {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    .search-container button {
+        width: 100%;
+    }
+
+    .game {
+        margin-bottom: 20px;
+    }
+
+    .game-title {
+        padding: 12px;
+        font-size: 18px;
+    }
+
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    table {
+        min-width: 650px;
+    }
+
+    th,
+    td {
+        padding: 9px 10px;
+        font-size: 13px;
+    }
+
+    .country {
+        font-size: 22px;
+    }
+
+    .details {
+        padding: 12px 15px;
+        font-size: 14px;
+    }
+
+    .details h3 {
+        font-size: 17px;
+    }
+
+    .no-results {
+        padding: 15px;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="top-bar">
+
+    <div><h1>Plutonium Servers</h1>
+    <p id="status">Loading servers...</p></div>
+
+    <div id="top-bar-buttons">
+
+        <button
+        onclick="openStatusPage()"
+        class="status-button"
+        title="Plutonium Status"
+        aria-label="Plutonium Status"
+        >
+            <span class="status-icon"></span>
+        </button>
+
+        <button onclick="toggleDarkMode()" id="darkModeButton">
+            🌙
+        </button>
+
+        <button onclick="loadServers()">
+            Refresh
+        </button>
+
+        <button onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Scroll to top">
+            ↑ Top
+        </button>
+
+    </div>
+
+</div>
+
+<!-- BOTONES DE JUEGOS -->
+
+<div id="gameButtons" class="game-buttons"></div>
+
+<!-- BUSCADOR -->
+
+<div class="search-container">
+
+<input
+type="text"
+id="searchInput"
+placeholder="Search server, IP, map, country..."
+onkeydown="handleSearchKey(event)"
+
+>
+
+<button onclick="searchServers()">
+    Search
+</button>
+
+<button onclick="clearSearch()">
+    Clear
+</button>
+
+</div>
+
+
+
+<div id="servers"></div>
+
+<script>
+
+const API_URLS = [
+
+    "https://gameserve.rs/api/v1/servers?platform=plutonium&game=T6&limit=500",
+
+    "https://gameserve.rs/api/v1/servers?platform=plutonium&game=T6ZM&limit=500",
+
+    "https://gameserve.rs/api/v1/servers?platform=plutonium&game=IW5&limit=500",
+
+    "https://gameserve.rs/api/v1/servers?platform=plutonium&game=T4&limit=500",
+
+    "https://gameserve.rs/api/v1/servers?platform=plutonium&game=T4ZM&limit=500",
+
+    "https://gameserve.rs/api/v1/servers?platform=plutonium&game=T5&limit=500",
+
+    "https://gameserve.rs/api/v1/servers?platform=plutonium&game=T5ZM&limit=500"
+
+];
+
+let allServers = [];
+
+let currentSort = "players";
+
+let sortDescending = true;
+
+let expandedServerId = null;
+
+let selectedGame = "ALL";
+
+const urlParams =
+    new URLSearchParams(
+        window.location.search
+    );
+
+let searchQuery =
+    (
+        urlParams.get("q") || ""
+    )
+        .trim()
+        .toLowerCase();
+
+window.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        const input =
+            document.getElementById(
+                "searchInput"
+            );
+
+        if (input) {
+
+            input.value =
+                searchQuery;
+
+        }
+
+    }
+);
+
+/* =========================
+   BOTÓN STATUS
+========================= */
+
+function openStatusPage() {
+
+    window.open(
+        "https://status.plutonium.pw/",
+        "_blank"
+    );
+
+}
+
+/* =========================
+   CARGAR SERVIDORES
+========================= */
+
+async function loadServers() {
+
+    const status =
+        document.getElementById(
+            "status"
+        );
+
+    status.textContent =
+        "Loading servers...";
+
+    try {
+
+        const responses =
+            await Promise.all(
+
+                API_URLS.map(
+
+                    url =>
+                        fetch(url)
+
+                )
+
+            );
+
+        responses.forEach(
+
+            response => {
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "HTTP " +
+                        response.status
+                    );
+
+                }
+
+            }
+
+        );
+
+        const results =
+            await Promise.all(
+
+                responses.map(
+
+                    response =>
+                        response.json()
+
+                )
+
+            );
+
+        allServers =
+            results.flatMap(
+
+                result => {
+
+                    if (
+
+                        result &&
+                        result.success &&
+                        result.data &&
+                        Array.isArray(
+                            result.data.servers
+                        )
+
+                    ) {
+
+                        return result.data.servers
+
+                            .filter(
+
+                                server =>
+                                    server != null
+
+                            );
+
+                    }
+
+                    return [];
+
+                }
+
+            );
+
+        const uniqueServers =
+            new Map();
+
+        allServers
+
+            .filter(
+
+                server =>
+                    server != null
+
+            )
+
+            .forEach(
+
+                server => {
+
+                    const serverId =
+
+                        server.id ||
+
+                        server.address ||
+
+                        (
+
+                            server.ip &&
+                            server.port
+
+                                ?
+
+                            `${server.ip}:${server.port}`
+
+                                :
+
+                            null
+
+                        );
+
+                    if (serverId) {
+
+                        uniqueServers.set(
+
+                            serverId,
+
+                            server
+
+                        );
+
+                    }
+
+                }
+
+            );
+
+        allServers =
+            Array.from(
+
+                uniqueServers.values()
+
+            );
+
+        const totalPlayers =
+            allServers.reduce(
+
+                (total, server) => {
+
+                    return total +
+
+                        Number(
+
+                            server?.players?.current ||
+
+                            0
+
+                        );
+
+                },
+
+                0
+
+            );
+
+        status.innerHTML =
+
+            allServers.length +
+
+            " servers | " +
+
+            totalPlayers +
+
+            " players online<br>Last updated on<br>" +
+
+new Date().toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true
+});
+
+        renderGameButtons();
+
+        renderServers();
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        status.innerHTML =
+
+            `
+
+            <span class="error">
+
+                Error loading servers:
+
+                ${escapeHtml(
+
+                    error?.message ||
+
+                    "Unknown error"
+
+                )}
+
+            </span>
+
+            `;
+
+    }
+
+}
+
+/* =========================
+   BOTONES DE JUEGOS
+========================= */
+
+function renderGameButtons() {
+
+    const container =
+        document.getElementById(
+            "gameButtons"
+        );
+
+    container.innerHTML =
+        "";
+
+    const allPlayers =
+        allServers.reduce(
+
+            (total, server) => {
+
+                return total +
+
+                    Number(
+
+                        server?.players?.current ||
+
+                        0
+
+                    );
+
+            },
+
+            0
+
+        );
+
+    const allButton =
+        document.createElement(
+            "button"
+        );
+
+    allButton.className =
+        "game-button";
+
+    if (
+
+        selectedGame ===
+        "ALL"
+
+    ) {
+
+        allButton.classList.add(
+            "active"
+        );
+
+    }
+
+    allButton.innerHTML = `
+
+        <strong>
+            ALL
+        </strong>
+
+        <small>
+
+            All Games
+
+            <br>
+
+            ${allServers.length}
+
+            servers
+
+            ·
+
+            ${allPlayers}
+
+            online
+
+        </small>
+
+    `;
+
+    allButton.onclick =
+
+        () => {
+
+            selectedGame =
+                "ALL";
+
+            expandedServerId =
+                null;
+
+            renderGameButtons();
+
+            renderServers();
+
+        };
+
+    container.appendChild(
+        allButton
+    );
+
+    const games = {};
+
+    allServers.forEach(
+
+        server => {
+
+            const gameId =
+
+                server.game?.id ||
+
+                "UNKNOWN";
+
+            const gameName =
+
+                server.game?.name ||
+
+                "Unknown Game";
+
+            if (!games[gameId]) {
+
+                games[gameId] = {
+
+                    id:
+                        gameId,
+
+                    name:
+                        gameName,
+
+                    servers:
+                        []
+
+                };
+
+            }
+
+            games[gameId]
+
+                .servers
+
+                .push(server);
+
+        }
+
+    );
+
+    Object.values(games)
+
+        .forEach(
+
+            game => {
+
+                const players =
+
+                    game.servers.reduce(
+
+                        (total, server) => {
+
+                            return total +
+
+                                Number(
+
+                                    server?.players?.current ||
+
+                                    0
+
+                                );
+
+                        },
+
+                        0
+
+                    );
+
+                const button =
+
+                    document.createElement(
+                        "button"
+                    );
+
+                button.className =
+                    "game-button";
+
+                if (
+
+                    selectedGame ===
+                    game.id
+
+                ) {
+
+                    button.classList.add(
+                        "active"
+                    );
+
+                }
+
+                button.innerHTML = `
+
+                    <strong>
+
+                        ${escapeHtml(
+
+                            getShortGameName(
+
+                                game.id
+
+                            )
+
+                        )}
+
+                    </strong>
+
+                    <small>
+
+                        ${escapeHtml(
+
+                            game.name
+
+                        )}
+
+                        <br>
+
+                        ${game.servers.length}
+
+                        servers
+
+                        ·
+
+                        ${players}
+
+                        online
+
+                    </small>
+
+                `;
+
+                button.onclick =
+
+                    () => {
+
+                        selectedGame =
+                            game.id;
+
+                        expandedServerId =
+                            null;
+
+                        renderGameButtons();
+
+                        renderServers();
+
+                    };
+
+                container.appendChild(
+                    button
+                );
+
+            }
+
+        );
+
+}
+
+/* =========================
+   NOMBRES CORTOS
+========================= */
+
+function getShortGameName(
+
+    gameId
+
+) {
+
+    const names = {
+
+        "T6":
+            "BO2 MP",
+
+        "T6ZM":
+            "BO2 ZM",
+
+        "IW5":
+            "MW3 MP",
+
+        "T5":
+            "BO1 MP",
+
+        "T5ZM":
+            "BO1 ZM",
+
+        "T4":
+            "WaW MP",
+
+        "T4ZM":
+            "WaW ZM"
+
+    };
+
+    return names[gameId] ||
+
+        gameId;
+
+}
+
+/* =========================
+   RENDER SERVIDORES
+========================= */
+
+function renderServers() {
+
+    const container =
+        document.getElementById(
+            "servers"
+        );
+
+    container.innerHTML =
+        "";
+
+    let filteredServers =
+        allServers;
+
+    if (
+
+        selectedGame !==
+        "ALL"
+
+    ) {
+
+        filteredServers =
+
+            filteredServers.filter(
+
+                server =>
+
+                    server.game?.id ===
+
+                    selectedGame
+
+            );
+
+    }
+
+    if (searchQuery) {
+
+        filteredServers =
+
+            filteredServers.filter(
+
+                server => {
+
+                    if (!server) {
+
+                        return false;
+
+                    }
+
+                    const searchableText = [
+
+                        server.name,
+
+                        server.ip,
+
+                        server.address,
+
+                        server.map?.display,
+
+                        server.map?.raw,
+
+                        server.mode?.display,
+
+                        server.mode?.raw,
+
+                        server.location?.countryName,
+
+                        server.location?.countryCode,
+
+                        server.game?.name,
+
+                        server.game?.id
+
+                    ]
+
+                        .filter(Boolean)
+
+                        .join(" ")
+
+                        .toLowerCase();
+
+                    return searchableText.includes(
+
+                        searchQuery
+
+                    );
+
+                }
+
+            );
+
+    }
+
+    const games = {};
+
+    filteredServers
+
+        .filter(
+
+            server =>
+                server != null
+
+        )
+
+        .forEach(
+
+            server => {
+
+                const gameId =
+
+                    server.game?.id ||
+
+                    "UNKNOWN";
+
+                const gameName =
+
+                    server.game?.name ||
+
+                    "Unknown Game";
+
+                if (!games[gameId]) {
+
+                    games[gameId] = {
+
+                        name:
+                            gameName,
+
+                        servers:
+                            []
+
+                    };
+
+                }
+
+                games[gameId]
+
+                    .servers
+
+                    .push(server);
+
+            }
+
+        );
+
+    Object.entries(games)
+
+        .forEach(
+
+            ([gameId, game]) => {
+
+                renderGame(
+
+                    gameId,
+
+                    game,
+
+                    container
+
+                );
+
+            }
+
+        );
+
+    if (
+
+        filteredServers.length ===
+        0
+
+    ) {
+
+        container.innerHTML =
+
+            `
+
+            <div class="no-results">
+
+                No servers found.
+
+            </div>
+
+            `;
+
+    }
+
+}
+
+/* =========================
+   RENDER GAME
+========================= */
+
+function renderGame(
+
+    gameId,
+
+    game,
+
+    container
+
+) {
+
+    const gameElement =
+
+        document.createElement(
+            "div"
+        );
+
+    gameElement.className =
+        "game";
+
+    gameElement.dataset.gameId =
+        gameId;
+
+    const gameTitle =
+
+        document.createElement(
+            "h2"
+        );
+
+    gameTitle.className =
+        "game-title";
+
+    gameTitle.textContent =
+
+        game.name +
+
+        " - " +
+
+        game.servers.length +
+
+        " servers";
+
+    gameElement.appendChild(
+        gameTitle
+    );
+
+    const tableContainer =
+
+        document.createElement(
+            "div"
+        );
+
+    tableContainer.className =
+        "table-container";
+
+    const table =
+
+        document.createElement(
+            "table"
+        );
+
+    const thead =
+
+        document.createElement(
+            "thead"
+        );
+
+    thead.innerHTML = `
+
+        <tr>
+
+            <th onclick="sortByCountry()">
+
+                Country
+
+                ${
+
+                    currentSort ===
+                    "country"
+
+                        ?
+
+                    `
+
+                        <span class="sort-arrow">
+
+                            ${
+
+                                sortDescending
+
+                                    ?
+
+                                "▼"
+
+                                    :
+
+                                "▲"
+
+                            }
+
+                        </span>
+
+                    `
+
+                        :
+
+                    ""
+
+                }
+
+            </th>
+
+            <th onclick="sortByServer()">
+                Server
+                ${currentSort === "server" ? `<span class="sort-arrow">${sortDescending ? "&#9660;" : "&#9650;"}</span>` : ""}
+            </th>
+
+            <th onclick="sortByPlayers()">
+
+                Players
+
+                ${
+
+                    currentSort ===
+                    "players"
+
+                        ?
+
+                    `
+
+                        <span class="sort-arrow">
+
+                            ${
+
+                                sortDescending
+
+                                    ?
+
+                                "▼"
+
+                                    :
+
+                                "▲"
+
+                            }
+
+                        </span>
+
+                    `
+
+                        :
+
+                    ""
+
+                }
+
+            </th>
+
+            <th onclick="sortByMap()">
+                Map
+                ${currentSort === "map" ? `<span class="sort-arrow">${sortDescending ? "&#9660;" : "&#9650;"}</span>` : ""}
+            </th>
+
+            <th onclick="sortByMode()">
+                Mode
+                ${currentSort === "mode" ? `<span class="sort-arrow">${sortDescending ? "&#9660;" : "&#9650;"}</span>` : ""}
+            </th>
+
+        </tr>
+
+    `;
+
+    table.appendChild(
+        thead
+    );
+
+    const tbody =
+
+        document.createElement(
+            "tbody"
+        );
+
+    const sortedServers =
+
+        [...game.servers]
+
+            .sort(
+
+                sortServers
+
+            );
+
+    sortedServers.forEach(
+
+        server => {
+
+            if (!server) {
+
+                return;
+
+            }
+
+            const serverId =
+
+                server.id ||
+
+                server.address ||
+
+                (
+
+                    server.ip &&
+                    server.port
+
+                        ?
+
+                    `${server.ip}:${server.port}`
+
+                        :
+
+                    Math.random()
+
+                );
+
+            const players =
+                server.players || {};
+
+            const currentPlayers =
+
+                Number(
+
+                    players.current ||
+
+                    0
+
+                );
+
+            const maxPlayers =
+
+                Number(
+
+                    players.max ||
+
+                    0
+
+                );
+
+            let country =
+
+                server.location?.countryName ||
+
+                server.location?.countryCode ||
+
+                "Unknown";
+
+            let countryCode =
+
+                server.location?.countryCode ||
+
+                getCountryCode(country);
+
+            if (
+
+                server.ip ===
+                "74.0.5.27"
+
+            ) {
+
+                country =
+                    "Brazil";
+
+                countryCode =
+                    "BR";
+
+            }
+
+            const flag =
+
+                getCountryFlag(
+
+                    countryCode
+
+                );
+
+            const isExpanded =
+
+                expandedServerId ===
+                serverId;
+            let playerClass="player-empty";
+            if(currentPlayers==maxPlayers && maxPlayers>0){playerClass="player-full";}
+            else if(currentPlayers>=9){playerClass="player-medium";}
+            else if(currentPlayers>=1){playerClass="player-low";}
+
+            const row =
+
+                document.createElement(
+                    "tr"
+                );
+
+            row.className =
+                "server-row";
+
+            row.onclick =
+
+                () => {
+
+                    toggleServer(
+
+                        serverId
+
+                    );
+
+                };
+
+            row.innerHTML = `
+
+                <td
+
+                    class="country"
+
+                    title="${escapeHtml(country)}"
+
+                >
+
+                    ${flag}
+
+                </td>
+
+                <td class="server-name">
+
+                    <span
+
+                        class="expand-arrow ${
+
+                            isExpanded
+
+                                ?
+
+                            "open"
+
+                                :
+
+                            ""
+
+                        }"
+
+                    >
+
+                        ${
+
+                            isExpanded
+
+                                ?
+
+                            "⌃"
+
+                                :
+
+                            "⌄"
+
+                        }
+
+                    </span>
+
+                    ${escapeHtml(
+
+                        server.name ||
+
+                        "Unknown Server"
+
+                    )}
+
+                </td>
+
+                <td class="players-count"><span class="player-box ${playerClass}">${currentPlayers}/${maxPlayers}</span></td>
+
+                <td>
+
+                    ${escapeHtml(
+
+                        server.map?.display ||
+
+                        server.map?.raw ||
+
+                        "Unknown"
+
+                    )}
+
+                </td>
+
+                <td>
+
+                    ${escapeHtml(
+
+                        server.mode?.display ||
+
+                        server.mode?.raw ||
+
+                        "Unknown"
+
+                    )}
+
+                </td>
+
+            `;
+
+            tbody.appendChild(
+                row
+            );
+
+            if (
+
+                expandedServerId ===
+                serverId
+
+            ) {
+
+                const detailsRow =
+
+                    createDetailsRow(
+
+                        server
+
+                    );
+
+                tbody.appendChild(
+                    detailsRow
+                );
+
+            }
+
+        }
+
+    );
+
+    table.appendChild(
+        tbody
+    );
+
+    tableContainer.appendChild(
+        table
+    );
+
+    gameElement.appendChild(
+        tableContainer
+    );
+
+    container.appendChild(
+        gameElement
+    );
+
+}
+
+/* =========================
+   BANDERAS
+========================= */
+
+function getCountryFlag(
+
+    countryCode
+
+) {
+
+    if (
+
+        !countryCode ||
+
+        countryCode.length !== 2
+
+    ) {
+
+        return "🌐";
+
+    }
+
+    const code =
+
+        countryCode
+
+            .toLowerCase();
+
+    return `
+
+        <img
+
+            src="https://flagcdn.com/w40/${code}.png"
+
+            alt="${code}"
+
+            class="country-flag"
+
+            loading="lazy"
+
+        >
+
+    `;
+
+}
+
+/* =========================
+   CODIGOS DE PAIS
+========================= */
+
+function getCountryCode(
+
+    countryName
+
+) {
+
+    const countries = {
+
+        "argentina":
+            "AR",
+
+        "brazil":
+            "BR",
+
+        "brasil":
+            "BR",
+
+        "united states":
+            "US",
+
+        "usa":
+            "US",
+
+        "canada":
+            "CA",
+
+        "mexico":
+            "MX",
+
+        "chile":
+            "CL",
+
+        "uruguay":
+            "UY",
+
+        "paraguay":
+            "PY",
+
+        "bolivia":
+            "BO",
+
+        "peru":
+            "PE",
+
+        "colombia":
+            "CO",
+
+        "venezuela":
+            "VE",
+
+        "ecuador":
+            "EC",
+
+        "germany":
+            "DE",
+
+        "france":
+            "FR",
+
+        "spain":
+            "ES",
+
+        "italy":
+            "IT",
+
+        "portugal":
+            "PT",
+
+        "united kingdom":
+            "GB",
+
+        "uk":
+            "GB",
+
+        "netherlands":
+            "NL",
+
+        "belgium":
+            "BE",
+
+        "switzerland":
+            "CH",
+
+        "austria":
+            "AT",
+
+        "poland":
+            "PL",
+
+        "russia":
+            "RU",
+
+        "ukraine":
+            "UA",
+
+        "turkey":
+            "TR",
+
+        "australia":
+            "AU",
+
+        "japan":
+            "JP",
+
+        "china":
+            "CN",
+
+        "south korea":
+            "KR",
+
+        "india":
+            "IN",
+
+        "singapore":
+            "SG",
+
+        "south africa":
+            "ZA"
+
+    };
+
+    if (!countryName) {
+
+        return null;
+
+    }
+
+    return countries[
+
+        String(countryName)
+
+            .trim()
+
+            .toLowerCase()
+
+    ] || null;
+
+}
+
+/* =========================
+   ORDENAMIENTO
+========================= */
+
+function sortServers(
+
+    a,
+
+    b
+
+) {
+
+    if (!a || !b) {
+
+        return 0;
+
+    }
+
+    if (
+
+        currentSort ===
+        "country"
+
+    ) {
+
+        const countryA =
+
+            (
+
+                a.location?.countryName ||
+
+                a.location?.countryCode ||
+
+                "Unknown"
+
+            )
+
+                .toLowerCase();
+
+        const countryB =
+
+            (
+
+                b.location?.countryName ||
+
+                b.location?.countryCode ||
+
+                "Unknown"
+
+            )
+
+                .toLowerCase();
+
+        const result =
+
+            countryA.localeCompare(
+
+                countryB
+
+            );
+
+        return sortDescending
+
+            ?
+
+            -result
+
+            :
+
+            result;
+
+    }
+
+    if (
+
+        currentSort ===
+        "players"
+
+    ) {
+
+        const playersA =
+
+            Number(
+
+                a.players?.current ||
+
+                0
+
+            );
+
+        const playersB =
+
+            Number(
+
+                b.players?.current ||
+
+                0
+
+            );
+
+        return sortDescending
+
+            ?
+
+            playersB - playersA
+
+            :
+
+            playersA - playersB;
+
+    }
+
+    if (currentSort === "server") {
+        const r = (a.name||"").toLowerCase().localeCompare((b.name||"").toLowerCase());
+        return sortDescending ? -r : r;
+    }
+    if (currentSort === "map") {
+        const r = (a.map?.display||a.map?.raw||"").toLowerCase().localeCompare((b.map?.display||b.map?.raw||"").toLowerCase());
+        return sortDescending ? -r : r;
+    }
+    if (currentSort === "mode") {
+        const r = (a.mode?.display||a.mode?.raw||"").toLowerCase().localeCompare((b.mode?.display||b.mode?.raw||"").toLowerCase());
+        return sortDescending ? -r : r;
+    }
+    return 0;
+
+}
+
+/* =========================
+   ORDENAR POR PAIS
+========================= */
+
+function sortByCountry() {
+
+    if (
+
+        currentSort ===
+        "country"
+
+    ) {
+
+        sortDescending =
+            !sortDescending;
+
+    }
+
+    else {
+
+        currentSort =
+            "country";
+
+        sortDescending =
+            false;
+
+    }
+
+    renderServers();
+
+}
+
+/* =========================
+   ORDENAR POR JUGADORES
+========================= */
+
+function sortByPlayers() {
+
+    if (
+
+        currentSort ===
+        "players"
+
+    ) {
+
+        sortDescending =
+            !sortDescending;
+
+    }
+
+    else {
+
+        currentSort =
+            "players";
+
+        sortDescending =
+            true;
+
+    }
+
+    renderServers();
+
+}
+
+function sortByServer(){
+    if(currentSort==="server"){sortDescending=!sortDescending;}else{currentSort="server";sortDescending=false;}
+    renderServers();
+}
+function sortByMap(){
+    if(currentSort==="map"){sortDescending=!sortDescending;}else{currentSort="map";sortDescending=false;}
+    renderServers();
+}
+function sortByMode(){
+    if(currentSort==="mode"){sortDescending=!sortDescending;}else{currentSort="mode";sortDescending=false;}
+    renderServers();
+}
+
+/* =========================
+   BUSQUEDA
+========================= */
+
+function handleSearchKey(
+
+    event
+
+) {
+
+    if (
+
+        event.key ===
+        "Enter"
+
+    ) {
+
+        searchServers();
+
+    }
+
+}
+
+function searchServers() {
+
+    const input =
+
+        document.getElementById(
+
+            "searchInput"
+
+        );
+
+    const query =
+
+        input.value
+
+            .trim()
+
+            .toLowerCase();
+
+    searchQuery =
+        query;
+
+    const url =
+
+        new URL(
+
+            window.location.href
+
+        );
+
+    if (query) {
+
+        url.searchParams.set(
+
+            "q",
+
+            query
+
+        );
+
+    }
+
+    else {
+
+        url.searchParams.delete(
+
+            "q"
+
+        );
+
+    }
+
+    window.history.pushState(
+
+        {},
+
+        "",
+
+        url
+
+    );
+
+    expandedServerId =
+        null;
+
+    renderServers();
+
+}
+
+function clearSearch() {
+
+    const input =
+
+        document.getElementById(
+
+            "searchInput"
+
+        );
+
+    input.value =
+        "";
+
+    searchQuery =
+        "";
+
+    const url =
+
+        new URL(
+
+            window.location.href
+
+        );
+
+    url.searchParams.delete(
+
+        "q"
+
+    );
+
+    window.history.pushState(
+
+        {},
+
+        "",
+
+        url
+
+    );
+
+    expandedServerId =
+        null;
+
+    renderServers();
+
+}
+
+/* =========================
+   EXPANDIR SERVIDOR
+========================= */
+
+function toggleServer(
+
+    serverId
+
+) {
+
+    if (
+
+        expandedServerId ===
+        serverId
+
+    ) {
+
+        expandedServerId =
+            null;
+
+    }
+
+    else {
+
+        expandedServerId =
+            serverId;
+
+    }
+
+    renderServers();
+
+}
+
+/* =========================
+   DETALLES
+========================= */
+
+function createDetailsRow(
+
+    server
+
+) {
+
+    const row =
+
+        document.createElement(
+            "tr"
+        );
+
+    row.className =
+        "details-row";
+
+    const cell =
+
+        document.createElement(
+            "td"
+        );
+
+    cell.colSpan =
+        5;
+
+    const details =
+
+        document.createElement(
+            "div"
+        );
+
+    details.className =
+        "details";
+
+    const players =
+        server.players || {};
+
+    const address =
+
+        server.address ||
+
+        (
+
+            server.ip &&
+            server.port
+
+                ?
+
+            `${server.ip}:${server.port}`
+
+                :
+
+            "Unknown"
+
+        );
+
+    details.innerHTML = `
+        <p><strong>Servername:</strong> ${escapeHtml(server.name || "Unknown Server")}</p>
+        <p><strong>Connect:</strong> ${escapeHtml(address)}
+        <button class="copy-button" onclick="copyConnectCommand(event,'${escapeHtml(address)}')" title="Copy connection command">⧉</button></p>
+        <p><strong>Players:</strong> ${players.current || 0} / ${players.max || 0}</p>
+        <p><strong>Map:</strong> ${escapeHtml(server.map?.display || server.map?.raw || "Unknown")}</p>
+        <p><strong>Mode:</strong> ${escapeHtml(server.mode?.display || server.mode?.raw || "Unknown")}</p>
+    `;
+
+    cell.appendChild(
+        details
+    );
+
+    row.appendChild(
+        cell
+    );
+
+    return row;
+
+}
+
+/* =========================
+   COPIAR CONEXION
+========================= */
+
+function copyConnectCommand(
+
+    event,
+
+    address
+
+) {
+
+    event.stopPropagation();
+
+    const command =
+
+        "connect " +
+
+        address;
+
+    navigator.clipboard.writeText(
+
+        command
+
+    );
+
+    const button =
+        event.currentTarget;
+
+    button.textContent =
+        "✓";
+
+    button.classList.add(
+        "copied"
+    );
+
+    setTimeout(
+
+        () => {
+
+            button.textContent =
+                "⧉";
+
+            button.classList.remove(
+                "copied"
+            );
+
+        },
+
+        1500
+
+    );
+
+}
+
+/* =========================
+   MODO OSCURO
+========================= */
+
+function toggleDarkMode() {
+
+    document.body.classList.toggle(
+
+        "dark-mode"
+
+    );
+
+    const enabled =
+
+        document.body.classList.contains(
+
+            "dark-mode"
+
+        );
+
+    localStorage.setItem(
+
+        "darkMode",
+
+        enabled
+
+            ?
+
+        "yes"
+
+            :
+
+        "no"
+
+    );
+
+    document.getElementById(
+
+        "darkModeButton"
+
+    ).textContent =
+
+        enabled
+
+            ?
+
+        "☀️"
+
+            :
+
+        "🌙";
+
+}
+
+function loadDarkMode() {
+
+    const savedMode =
+
+        localStorage.getItem(
+
+            "darkMode"
+
+        );
+
+    if (
+
+        savedMode === null ||
+
+        savedMode === "yes"
+
+    ) {
+
+        document.body.classList.add(
+
+            "dark-mode"
+
+        );
+
+        document.getElementById(
+
+            "darkModeButton"
+
+        ).textContent =
+
+            "☀️";
+
+    }
+
+}
+
+/* =========================
+   ESCAPAR HTML
+========================= */
+
+function escapeHtml(
+
+    text
+
+) {
+
+    const div =
+
+        document.createElement(
+
+            "div"
+
+        );
+
+    div.textContent =
+
+        String(
+
+            text ?? ""
+
+        );
+
+    return div.innerHTML;
+
+}
+
+/* =========================
+   INICIAR
+========================= */
+
+loadDarkMode();
+
+loadServers();
+
+setInterval(
+
+    loadServers,
+
+    30000
+
+);
+
+</script>
+
+</body>
+
+</html>
