@@ -2686,4 +2686,82 @@ function loadDarkMode() {
 
             "darkMode"
 
-        
+        );
+
+    if (
+
+        savedMode === null ||
+
+        savedMode === "yes"
+
+    ) {
+
+        document.body.classList.add(
+
+            "dark-mode"
+
+        );
+
+        document.getElementById(
+
+            "darkModeButton"
+
+        ).textContent =
+
+            "☀️ Light Mode";
+
+    }
+
+}
+
+/* =========================
+   ESCAPAR HTML
+========================= */
+
+function escapeHtml(
+
+    text
+
+) {
+
+    const div =
+
+        document.createElement(
+
+            "div"
+
+        );
+
+    div.textContent =
+
+        String(
+
+            text ?? ""
+
+        );
+
+    return div.innerHTML;
+
+}
+
+/* =========================
+   INICIAR
+========================= */
+
+loadDarkMode();
+
+loadServers();
+
+setInterval(
+
+    loadServers,
+
+    30000
+
+);
+
+</script>
+
+</body>
+
+</html>
