@@ -27,6 +27,26 @@ body {
 
 h1 {
     margin-top: 0;
+    margin-bottom: 0;
+}
+
+#top-bar {
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f2f2f2;
+    margin: -20px -20px 20px -20px;
+    padding: 15px 20px;
+    border-bottom: 1px solid #ccc;
+}
+
+#top-bar-buttons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
 #status {
@@ -328,6 +348,11 @@ body.dark-mode {
     color: #b0b0b0;
 }
 
+body.dark-mode #top-bar {
+    background: #0b0b0b;
+    border-bottom-color: #1c1c1c;
+}
+
 body.dark-mode button {
     background: #111111;
     color: #999999;
@@ -563,31 +588,36 @@ body.dark-mode .details-row {
 
 <body>
 
-<h1>
-    Plutonium Servers
-</h1>
+<div id="top-bar">
 
-<button onclick="loadServers()">
-    Refresh Servers
-</button>
+    <h1>Plutonium Servers</h1>
 
-<button onclick="toggleDarkMode()" id="darkModeButton">
-    🌙 Dark Mode
-</button>
+    <div id="top-bar-buttons">
 
-<button
-onclick="openStatusPage()"
-class="status-button"
-title="Plutonium Status"
-aria-label="Plutonium Status"
+        <button onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Scroll to top">
+            ↑ Top
+        </button>
 
->
+        <button onclick="loadServers()">
+            Refresh Servers
+        </button>
 
+        <button onclick="toggleDarkMode()" id="darkModeButton">
+            🌙 Dark Mode
+        </button>
 
-<span class="status-icon"></span>
+        <button
+        onclick="openStatusPage()"
+        class="status-button"
+        title="Plutonium Status"
+        aria-label="Plutonium Status"
+        >
+            <span class="status-icon"></span>
+        </button>
 
+    </div>
 
-</button>
+</div>
 
 <!-- BOTONES DE JUEGOS -->
 
@@ -2656,82 +2686,4 @@ function loadDarkMode() {
 
             "darkMode"
 
-        );
-
-    if (
-
-        savedMode === null ||
-
-        savedMode === "yes"
-
-    ) {
-
-        document.body.classList.add(
-
-            "dark-mode"
-
-        );
-
-        document.getElementById(
-
-            "darkModeButton"
-
-        ).textContent =
-
-            "☀️ Light Mode";
-
-    }
-
-}
-
-/* =========================
-   ESCAPAR HTML
-========================= */
-
-function escapeHtml(
-
-    text
-
-) {
-
-    const div =
-
-        document.createElement(
-
-            "div"
-
-        );
-
-    div.textContent =
-
-        String(
-
-            text ?? ""
-
-        );
-
-    return div.innerHTML;
-
-}
-
-/* =========================
-   INICIAR
-========================= */
-
-loadDarkMode();
-
-loadServers();
-
-setInterval(
-
-    loadServers,
-
-    30000
-
-);
-
-</script>
-
-</body>
-
-</html>
+        
