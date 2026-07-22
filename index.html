@@ -27,6 +27,7 @@ body {
 
 #page-content {
     padding: 20px;
+    padding-top: 100px;
 }
 
 h1 {
@@ -35,8 +36,10 @@ h1 {
 }
 
 #top-bar {
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    right: 0;
     z-index: 999;
     display: flex;
     align-items: center;
@@ -44,6 +47,7 @@ h1 {
     background: #f2f2f2;
     padding: 18px 24px;
     border-bottom: 1px solid #ccc;
+    box-sizing: border-box;
 }
 
 #top-bar-left {
@@ -503,6 +507,7 @@ body.dark-mode .details-row {
 
     #page-content {
         padding: 10px;
+        padding-top: 85px;
     }
 
     #top-bar {
