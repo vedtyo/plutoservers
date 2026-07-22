@@ -39,10 +39,74 @@ button {
     cursor: pointer;
     background: white;
     border: 1px solid #aaa;
+    border-radius: 0;
 }
 
 button:hover {
     background: #e8e8e8;
+}
+
+/* =========================
+   BOTÓN STATUS
+========================= */
+
+.status-button {
+    width: 36px;
+    height: 35px;
+    padding: 0;
+    margin-left: 4px;
+    cursor: pointer;
+    background: white;
+    border: 1px solid #aaa;
+    border-radius: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    position: relative;
+    top: -1.5px;
+}
+
+.status-button:hover {
+    background: #e8e8e8;
+}
+
+/* ÍCONO TIPO ESTADÍSTICAS */
+
+.status-icon {
+    width: 19px;
+    height: 19px;
+    position: relative;
+    display: block;
+}
+
+.status-icon::before {
+    content: "";
+    position: absolute;
+    left: 1px;
+    right: 1px;
+    top: 9px;
+    height: 1px;
+    background: #777;
+    transform: rotate(-28deg);
+    transform-origin: center;
+}
+
+.status-icon::after {
+    content: "";
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    left: 2px;
+    top: 10px;
+    border: 1px solid #777;
+    border-radius: 50%;
+    box-sizing: border-box;
+    box-shadow:
+        5px -5px 0 -1px white,
+        5px -5px 0 0 #777,
+        10px -1px 0 -1px white,
+        10px -1px 0 0 #777;
 }
 
 /* =========================
@@ -252,6 +316,29 @@ body.dark-mode button:hover {
     background: #1a1a1a;
 }
 
+body.dark-mode .status-button {
+    background: #111111;
+    color: #999999;
+    border-color: #252525;
+}
+
+body.dark-mode .status-button:hover {
+    background: #1a1a1a;
+}
+
+body.dark-mode .status-icon::before {
+    background: #999999;
+}
+
+body.dark-mode .status-icon::after {
+    border-color: #999999;
+    box-shadow:
+        5px -5px 0 -1px #111111,
+        5px -5px 0 0 #999999,
+        10px -1px 0 -1px #111111,
+        10px -1px 0 0 #999999;
+}
+
 body.dark-mode .game-button {
     background: #111111;
     color: #999999;
@@ -365,6 +452,13 @@ body.dark-mode .details-row {
         font-size: 14px;
     }
 
+    .status-button {
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        top: -1px;
+    }
+
     .game-buttons {
         gap: 5px;
     }
@@ -459,6 +553,20 @@ body.dark-mode .details-row {
     🌙 Dark Mode
 </button>
 
+<button
+onclick="openStatusPage()"
+class="status-button"
+title="Plutonium Status"
+aria-label="Plutonium Status"
+
+>
+
+
+<span class="status-icon"></span>
+
+
+</button>
+
 <!-- BOTONES DE JUEGOS -->
 
 <div id="gameButtons" class="game-buttons"></div>
@@ -551,6 +659,19 @@ window.addEventListener(
 
     }
 );
+
+/* =========================
+   BOTÓN STATUS
+========================= */
+
+function openStatusPage() {
+
+    window.open(
+        "https://status.plutonium.pw/",
+        "_blank"
+    );
+
+}
 
 /* =========================
    CARGAR SERVIDORES
@@ -1010,14 +1131,6 @@ function renderGameButtons() {
 
                 `;
 
-                /*
-                 * IMPORTANTE:
-                 * Solo cambiamos el juego.
-                 * NO hacemos scroll.
-                 * NO ocultamos botones.
-                 * NO ocultamos el buscador.
-                 */
-
                 button.onclick =
 
                     () => {
@@ -1102,10 +1215,6 @@ function renderServers() {
     let filteredServers =
         allServers;
 
-    /*
-     * FILTRO POR JUEGO
-     */
-
     if (
 
         selectedGame !==
@@ -1126,10 +1235,6 @@ function renderServers() {
             );
 
     }
-
-    /*
-     * FILTRO POR BUSQUEDA
-     */
 
     if (searchQuery) {
 
@@ -1514,6 +1619,7 @@ function renderGame(
                 Number(
 
                     players.current ||
+
                     0
 
                 );
@@ -1523,6 +1629,7 @@ function renderGame(
                 Number(
 
                     players.max ||
+
                     0
 
                 );
@@ -1540,10 +1647,6 @@ function renderGame(
                 server.location?.countryCode ||
 
                 getCountryCode(country);
-
-            /*
-             * FORZAR IP 74.0.5.27 A BRASIL
-             */
 
             if (
 
@@ -2015,6 +2118,7 @@ function sortServers(
             Number(
 
                 a.players?.current ||
+
                 0
 
             );
@@ -2024,6 +2128,7 @@ function sortServers(
             Number(
 
                 b.players?.current ||
+
                 0
 
             );
@@ -2427,6 +2532,7 @@ function copyConnectCommand(
     const command =
 
         "connect " +
+
         address;
 
     navigator.clipboard.writeText(
