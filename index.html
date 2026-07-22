@@ -43,10 +43,23 @@ h1 {
     border-bottom: 1px solid #ccc;
 }
 
+#top-bar-left {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+#last-updated {
+    font-size: 12px;
+    color: #777;
+}
+
 #top-bar-buttons {
     display: flex;
     align-items: center;
     gap: 6px;
+    flex-shrink: 0;
+    margin-left: 16px;
 }
 
 #status {
@@ -353,6 +366,10 @@ body.dark-mode #top-bar {
     border-bottom-color: #1c1c1c;
 }
 
+body.dark-mode #last-updated {
+    color: #555;
+}
+
 body.dark-mode button {
     background: #111111;
     color: #999999;
@@ -590,7 +607,10 @@ body.dark-mode .details-row {
 
 <div id="top-bar">
 
-    <h1>Plutonium Servers</h1>
+    <div id="top-bar-left">
+        <h1>Plutonium Servers</h1>
+        <span id="last-updated"></span>
+    </div>
 
     <div id="top-bar-buttons">
 
@@ -897,26 +917,21 @@ async function loadServers() {
             );
 
         status.textContent =
-
             allServers.length +
-
             " servers | " +
-
             totalPlayers +
+            " players online |";
 
-            " players online | " +
-
- 
-
-"Last updated on " +
-new Date().toLocaleString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true
-});
+        document.getElementById("last-updated").textContent =
+            "Last updated on " +
+            new Date().toLocaleString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+                hour: "numeric",
+                minute: "2-digit",
+                hour12: true
+            });
 
         renderGameButtons();
 
