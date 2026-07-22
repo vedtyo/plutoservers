@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
@@ -224,7 +225,7 @@ button:hover {
     padding: 15px;
     margin: 0;
     border-bottom: 1px solid #ccc;
-    background: #fafafa;
+    background: #ffffff;
 }
 
 .table-container {
@@ -236,19 +237,26 @@ table {
     width: 100%;
     border-collapse: collapse;
     min-width: 700px;
+    table-layout: fixed;
 }
 
+th:nth-child(1), td:nth-child(1) { width: 5%; }
+th:nth-child(2), td.server-name     { width: 43%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+th:nth-child(3), td.players-count   { width: 10%; }
+th:nth-child(4), td:nth-child(4)    { width: 23%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+th:nth-child(5), td:nth-child(5)    { width: 19%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
 th {
-    background: #e9e9e9;
+    background: #ffffff;
     padding: 12px;
     text-align: left;
-    border-bottom: 1px solid #bbb;
+    border-bottom: 1px solid #ddd;
     cursor: pointer;
     user-select: none;
 }
 
 th:hover {
-    background: #dedede;
+    background: #f0f0f0;
 }
 
 td {
@@ -261,7 +269,7 @@ tr.server-row {
 }
 
 tr.server-row:nth-child(odd) {
-    background: #e8e8e8;
+    background: #ffffff;
 }
 
 tr.server-row:nth-child(even) {
@@ -279,7 +287,7 @@ tr.server-row:hover {
 .players-count {
     font-weight:bold;
     white-space:nowrap;
-    text-align:center;
+    text-align:left;
 }
 .player-box{
     display:inline-block;
@@ -317,12 +325,11 @@ tr.server-row:hover {
 }
 
 .details-row {
-    background: #fafafa;
+    background: #ffffff;
 }
 
 .details {
     padding: 10px 16px;
-    border-bottom:1px solid #ccc;
 }
 .details p{margin:4px 0;font-size:14px;}
 .details strong{font-weight:bold;}
@@ -339,6 +346,10 @@ tr.server-row:hover {
 .sort-arrow {
     font-size: 11px;
     margin-left: 5px;
+}
+
+th:nth-child(3) {
+    text-align: left;
 }
 
 .no-results {
@@ -449,13 +460,14 @@ body.dark-mode .game {
 }
 
 body.dark-mode .game-title {
-    background: #111111;
-    border-color: #202020;
+    background: #0b0b0b;
+    border-color: #1c1c1c;
 }
 
 body.dark-mode th {
-    background: #151515;
+    background: #0b0b0b;
     color: #999999;
+    border-bottom-color: #333333;
 }
 
 body.dark-mode td {
@@ -467,15 +479,15 @@ body.dark-mode tr.server-row:nth-child(odd) {
 }
 
 body.dark-mode tr.server-row:nth-child(even) {
-    background: #151515;
+    background: #0b0b0b;
 }
 
 body.dark-mode tr.server-row:hover {
-    background: #1c1c1c;
+    background: #111111;
 }
 
 body.dark-mode .details-row {
-    background: #101010;
+    background: #0b0b0b;
 }
 
 .copy-button {
@@ -1596,8 +1608,9 @@ function renderGame(
 
             </th>
 
-            <th>
+            <th onclick="sortByServer()">
                 Server
+                ${currentSort === "server" ? `<span class="sort-arrow">${sortDescending ? "&#9660;" : "&#9650;"}</span>` : ""}
             </th>
 
             <th onclick="sortByPlayers()">
@@ -1641,12 +1654,14 @@ function renderGame(
 
             </th>
 
-            <th>
+            <th onclick="sortByMap()">
                 Map
+                ${currentSort === "map" ? `<span class="sort-arrow">${sortDescending ? "&#9660;" : "&#9650;"}</span>` : ""}
             </th>
 
-            <th>
+            <th onclick="sortByMode()">
                 Mode
+                ${currentSort === "mode" ? `<span class="sort-arrow">${sortDescending ? "&#9660;" : "&#9650;"}</span>` : ""}
             </th>
 
         </tr>
@@ -2234,6 +2249,18 @@ function sortServers(
 
     }
 
+    if (currentSort === "server") {
+        const r = (a.name||"").toLowerCase().localeCompare((b.name||"").toLowerCase());
+        return sortDescending ? -r : r;
+    }
+    if (currentSort === "map") {
+        const r = (a.map?.display||a.map?.raw||"").toLowerCase().localeCompare((b.map?.display||b.map?.raw||"").toLowerCase());
+        return sortDescending ? -r : r;
+    }
+    if (currentSort === "mode") {
+        const r = (a.mode?.display||a.mode?.raw||"").toLowerCase().localeCompare((b.mode?.display||b.mode?.raw||"").toLowerCase());
+        return sortDescending ? -r : r;
+    }
     return 0;
 
 }
@@ -2300,6 +2327,19 @@ function sortByPlayers() {
 
     renderServers();
 
+}
+
+function sortByServer(){
+    if(currentSort==="server"){sortDescending=!sortDescending;}else{currentSort="server";sortDescending=false;}
+    renderServers();
+}
+function sortByMap(){
+    if(currentSort==="map"){sortDescending=!sortDescending;}else{currentSort="map";sortDescending=false;}
+    renderServers();
+}
+function sortByMode(){
+    if(currentSort==="mode"){sortDescending=!sortDescending;}else{currentSort="mode";sortDescending=false;}
+    renderServers();
 }
 
 /* =========================
@@ -2569,183 +2609,4 @@ function copyConnectCommand(
 
     const command =
 
-        "connect " +
-
-        address;
-
-    navigator.clipboard.writeText(
-
-        command
-
-    );
-
-    const button =
-        event.currentTarget;
-
-    button.textContent =
-        "✓";
-
-    button.classList.add(
-        "copied"
-    );
-
-    setTimeout(
-
-        () => {
-
-            button.textContent =
-                "⧉";
-
-            button.classList.remove(
-                "copied"
-            );
-
-        },
-
-        1500
-
-    );
-
-}
-
-/* =========================
-   MODO OSCURO
-========================= */
-
-function toggleDarkMode() {
-
-    document.body.classList.toggle(
-
-        "dark-mode"
-
-    );
-
-    const enabled =
-
-        document.body.classList.contains(
-
-            "dark-mode"
-
-        );
-
-    localStorage.setItem(
-
-        "darkMode",
-
-        enabled
-
-            ?
-
-        "yes"
-
-            :
-
-        "no"
-
-    );
-
-    document.getElementById(
-
-        "darkModeButton"
-
-    ).textContent =
-
-        enabled
-
-            ?
-
-        "☀️"
-
-            :
-
-        "🌙";
-
-}
-
-function loadDarkMode() {
-
-    const savedMode =
-
-        localStorage.getItem(
-
-            "darkMode"
-
-        );
-
-    if (
-
-        savedMode === null ||
-
-        savedMode === "yes"
-
-    ) {
-
-        document.body.classList.add(
-
-            "dark-mode"
-
-        );
-
-        document.getElementById(
-
-            "darkModeButton"
-
-        ).textContent =
-
-            "☀️";
-
-    }
-
-}
-
-/* =========================
-   ESCAPAR HTML
-========================= */
-
-function escapeHtml(
-
-    text
-
-) {
-
-    const div =
-
-        document.createElement(
-
-            "div"
-
-        );
-
-    div.textContent =
-
-        String(
-
-            text ?? ""
-
-        );
-
-    return div.innerHTML;
-
-}
-
-/* =========================
-   INICIAR
-========================= */
-
-loadDarkMode();
-
-loadServers();
-
-setInterval(
-
-    loadServers,
-
-    30000
-
-);
-
-</script>
-
-</body>
-
-</html>
+      
