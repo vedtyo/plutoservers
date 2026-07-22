@@ -236,9 +236,18 @@ tr.server-row:hover {
 }
 
 .players-count {
-    font-weight: bold;
-    white-space: nowrap;
+    font-weight:bold;
+    white-space:nowrap;
+    text-align:center;
 }
+.player-box{
+display:inline-block;min-width:58px;padding:2px 8px;text-align:center;
+border:1px solid;border-radius:0;font-weight:bold;font-size:13px;
+background:rgba(255,255,255,.05);box-sizing:border-box;}
+.player-empty{color:#8b8b8b;border-color:rgba(140,140,140,.45);background:rgba(140,140,140,.08);}
+.player-low{color:#d8b64d;border-color:rgba(216,182,77,.55);background:rgba(216,182,77,.08);}
+.player-medium{color:#59d36d;border-color:rgba(89,211,109,.55);background:rgba(89,211,109,.08);}
+.player-full{color:#ff6464;border-color:rgba(255,100,100,.60);background:rgba(255,100,100,.08);}
 
 .country {
     white-space: nowrap;
@@ -1681,6 +1690,10 @@ function renderGame(
 
                 expandedServerId ===
                 serverId;
+            let playerClass="player-empty";
+            if(currentPlayers==maxPlayers && maxPlayers>0){playerClass="player-full";}
+            else if(currentPlayers>=9){playerClass="player-medium";}
+            else if(currentPlayers>=1){playerClass="player-low";}
 
             const row =
 
@@ -1763,15 +1776,7 @@ function renderGame(
 
                 </td>
 
-                <td class="players-count">
-
-                    ${currentPlayers}
-
-                    /
-
-                    ${maxPlayers}
-
-                </td>
+                <td class="players-count"><span class="player-box ${playerClass}">${currentPlayers}/${maxPlayers}</span></td>
 
                 <td>
 
