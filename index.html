@@ -10,13 +10,13 @@
 
     <title>Plutonium Servers</title>
 
-    <meta name="google-site-verification" content="Azbr9S9pkRxNnAvaJUyEK6nke3LzKKrvUv7fREwoxyA">
+    <meta name="google-site-verification" content="">
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="favicon.png">
 
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-446Y45EWPD"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0XJM4EP2XP"></script>
 
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -27,7 +27,7 @@
 
         gtag('js', new Date());
 
-        gtag('config', 'G-446Y45EWPD');
+        gtag('config', 'G-0XJM4EP2XP');
     </script>
 
 </head>
@@ -815,10 +815,6 @@ async function loadServers() {
             "status"
         );
 
-    // Keep the selected game synchronized with the current URL on every
-    // load, including a full refresh of /BO2-ZM or any other game route.
-    selectedGame = getGameFromCurrentUrl();
-
     status.textContent =
         "Loading servers...";
 
@@ -1074,7 +1070,6 @@ function renderGameButtons() {
 
     allButton.className =
         "game-button";
-    allButton.type = "button";
 
     if (
 
@@ -1119,7 +1114,15 @@ function renderGameButtons() {
 
         () => {
 
-            selectGame("ALL");
+            selectedGame =
+                "ALL";
+
+            expandedServerId =
+                null;
+
+            renderGameButtons();
+
+            renderServers();
 
         };
 
@@ -1208,8 +1211,6 @@ function renderGameButtons() {
 
                 button.className =
                     "game-button";
-                button.type = "button";
-                button.dataset.gameId = game.id;
 
                 if (
 
@@ -1268,7 +1269,15 @@ function renderGameButtons() {
 
                     () => {
 
-                        selectGame(game.id);
+                        selectedGame =
+                            game.id;
+
+                        expandedServerId =
+                            null;
+
+                        renderGameButtons();
+
+                        renderServers();
 
                     };
 
@@ -1322,103 +1331,6 @@ function getShortGameName(
         gameId;
 
 }
-
-const GAME_URLS = {
-    "T6": "https://pluservers.ddns.net/BO2-MP",
-    "T6ZM": "https://pluservers.ddns.net/BO2-ZM",
-    "IW5": "https://pluservers.ddns.net/MW3-MP",
-    "T5": "https://pluservers.ddns.net/BO1-MP",
-    "T5ZM": "https://pluservers.ddns.net/BO1-ZM",
-    "T4": "https://pluservers.ddns.net/WaW-MP",
-    "T4ZM": "https://pluservers.ddns.net/WaW-ZM"
-};
-
-const GAME_PATHS = {
-    "T6": "/BO2-MP",
-    "T6ZM": "/BO2-ZM",
-    "IW5": "/MW3-MP",
-    "T5": "/BO1-MP",
-    "T5ZM": "/BO1-ZM",
-    "T4": "/WaW-MP",
-    "T4ZM": "/WaW-ZM"
-};
-
-function selectGame(gameId) {
-    selectedGame = gameId || "ALL";
-    expandedServerId = null;
-
-    // Redraw immediately inside this same index.html.
-    renderGameButtons();
-    renderServers();
-
-    const targetPath = GAME_PATHS[selectedGame] || "/";
-
-    /*
-     * On the hosted site, update the visible URL without reloading the
-     * single HTML file. When opened directly as file://, keep the page
-     * working and use the hash as a local fallback.
-     */
-    if (window.location.protocol === "file:") {
-        window.location.hash =
-            selectedGame === "ALL" ? "" : targetPath.slice(1);
-        return;
-    }
-
-    if (window.location.pathname !== targetPath) {
-        window.history.pushState(
-            { game: selectedGame },
-            "",
-            targetPath + window.location.search
-        );
-    }
-}
-
-function getGameFromCurrentUrl() {
-    const currentPath =
-        window.location.pathname
-            .replace(/\/+$/, "")
-            .toLowerCase() || "/";
-
-    const pathMatch =
-        Object.entries(GAME_PATHS)
-            .find(
-                ([, gamePath]) =>
-                    gamePath.toLowerCase() === currentPath
-            );
-
-    if (pathMatch) {
-        return pathMatch[0];
-    }
-
-    if (window.location.protocol === "file:") {
-        const hash =
-            window.location.hash.slice(1);
-
-        const hashMatch =
-            Object.entries(GAME_PATHS)
-                .find(
-                    ([, gamePath]) =>
-                        gamePath.slice(1).toLowerCase() === hash.toLowerCase()
-                );
-
-        if (hashMatch) {
-            return hashMatch[0];
-        }
-    }
-
-    return "ALL";
-}
-
-window.addEventListener(
-    "popstate",
-    () => {
-        selectedGame =
-            getGameFromCurrentUrl();
-        expandedServerId = null;
-        renderGameButtons();
-        renderServers();
-    }
-);
 
 /* =========================
    RENDER SERVIDORES
@@ -1518,12 +1430,7 @@ function renderServers() {
 
     const games = {};
 
-    if (selectedGame === "ALL") {
-        games.ALL = {
-            name: "All Games",
-            servers: filteredServers.filter(server => server != null)
-        };
-    } else filteredServers
+    filteredServers
 
         .filter(
 
@@ -2895,9 +2802,6 @@ function escapeHtml(
 ========================= */
 
 loadDarkMode();
-
-selectedGame =
-    getGameFromCurrentUrl();
 
 loadServers();
 
