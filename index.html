@@ -1428,19 +1428,23 @@ function renderServers() {
 
     }
 
-    const games = {};
+    const validServers = filteredServers.filter(
+        server => server != null
+    );
 
-    filteredServers
+    if (selectedGame === "ALL") {
+        renderGame(
+            "ALL",
+            {
+                name: "All Games",
+                servers: validServers
+            },
+            container
+        );
+    } else {
+        const games = {};
 
-        .filter(
-
-            server =>
-                server != null
-
-        )
-
-        .forEach(
-
+        validServers.forEach(
             server => {
 
                 const gameId =
@@ -1476,14 +1480,11 @@ function renderServers() {
                     .push(server);
 
             }
-
         );
 
-    Object.entries(games)
-
-        .forEach(
-
-            ([gameId, game]) => {
+        Object.entries(games)
+            .forEach(
+                ([gameId, game]) => {
 
                 renderGame(
 
@@ -1495,9 +1496,9 @@ function renderServers() {
 
                 );
 
-            }
-
-        );
+                }
+            );
+    }
 
     if (
 
