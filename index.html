@@ -10,13 +10,13 @@
 
     <title>Plutonium Servers</title>
 
-    <meta name="google-site-verification" content="">
+    <meta name="google-site-verification" content="Azbr9S9pkRxNnAvaJUyEK6nke3LzKKrvUv7fREwoxyA">
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="favicon.png">
 
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0XJM4EP2XP"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-446Y45EWPD"></script>
 
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -27,7 +27,7 @@
 
         gtag('js', new Date());
 
-        gtag('config', 'G-0XJM4EP2XP');
+        gtag('config', 'G-446Y45EWPD');
     </script>
 
 </head>
@@ -758,7 +758,36 @@ let sortDescending = true;
 
 let expandedServerId = null;
 
-let selectedGame = "ALL";
+const GAME_PATHS = {
+    "T6": "BO2-MP",
+    "T6ZM": "BO2-ZM",
+    "IW5": "MW3-MP",
+    "T5": "BO1-MP",
+    "T5ZM": "BO1-ZM",
+    "T4": "WaW-MP",
+    "T4ZM": "WaW-ZM"
+};
+
+const GAME_IDS_BY_PATH = Object.fromEntries(
+    Object.entries(GAME_PATHS).map(
+        ([gameId, path]) => [
+            path.toLowerCase(),
+            gameId
+        ]
+    )
+);
+
+function getGameFromCurrentUrl() {
+    const path =
+        window.location.hash
+            .replace(/^#\/?/, "")
+            .replace(/\/+$/, "")
+            .toLowerCase();
+
+    return GAME_IDS_BY_PATH[path] || "ALL";
+}
+
+let selectedGame = getGameFromCurrentUrl();
 
 const urlParams =
     new URLSearchParams(
@@ -814,6 +843,10 @@ async function loadServers() {
         document.getElementById(
             "status"
         );
+
+    // Keep the selected game synchronized with the current URL on every
+    // load, including a full refresh of /BO2-ZM or any other game route.
+    selectedGame = getGameFromCurrentUrl();
 
     status.textContent =
         "Loading servers...";
@@ -1070,6 +1103,7 @@ function renderGameButtons() {
 
     allButton.className =
         "game-button";
+    allButton.type = "button";
 
     if (
 
@@ -1114,15 +1148,7 @@ function renderGameButtons() {
 
         () => {
 
-            selectedGame =
-                "ALL";
-
-            expandedServerId =
-                null;
-
-            renderGameButtons();
-
-            renderServers();
+            selectGame("ALL");
 
         };
 
@@ -1211,6 +1237,8 @@ function renderGameButtons() {
 
                 button.className =
                     "game-button";
+                button.type = "button";
+                button.dataset.gameId = game.id;
 
                 if (
 
@@ -1269,15 +1297,7 @@ function renderGameButtons() {
 
                     () => {
 
-                        selectedGame =
-                            game.id;
-
-                        expandedServerId =
-                            null;
-
-                        renderGameButtons();
-
-                        renderServers();
+                        selectGame(game.id);
 
                     };
 
@@ -1331,6 +1351,45 @@ function getShortGameName(
         gameId;
 
 }
+
+function selectGame(gameId) {
+    selectedGame = gameId || "ALL";
+    expandedServerId = null;
+
+    const hash =
+        selectedGame === "ALL"
+            ? ""
+            : `#${GAME_PATHS[selectedGame]}`;
+
+    window.history.pushState(
+        { game: selectedGame },
+        "",
+        `${window.location.pathname}${window.location.search}${hash}`
+    );
+
+    renderGameButtons();
+    renderServers();
+}
+
+window.addEventListener(
+    "popstate",
+    () => {
+        selectedGame = getGameFromCurrentUrl();
+        expandedServerId = null;
+        renderGameButtons();
+        renderServers();
+    }
+);
+
+window.addEventListener(
+    "hashchange",
+    () => {
+        selectedGame = getGameFromCurrentUrl();
+        expandedServerId = null;
+        renderGameButtons();
+        renderServers();
+    }
+);
 
 /* =========================
    RENDER SERVIDORES
@@ -1428,23 +1487,24 @@ function renderServers() {
 
     }
 
-    const validServers = filteredServers.filter(
-        server => server != null
-    );
+    const games = {};
 
     if (selectedGame === "ALL") {
-        renderGame(
-            "ALL",
-            {
-                name: "All Games",
-                servers: validServers
-            },
-            container
-        );
-    } else {
-        const games = {};
+        games.ALL = {
+            name: "All Games",
+            servers: filteredServers.filter(server => server != null)
+        };
+    } else filteredServers
 
-        validServers.forEach(
+        .filter(
+
+            server =>
+                server != null
+
+        )
+
+        .forEach(
+
             server => {
 
                 const gameId =
@@ -1480,11 +1540,14 @@ function renderServers() {
                     .push(server);
 
             }
+
         );
 
-        Object.entries(games)
-            .forEach(
-                ([gameId, game]) => {
+    Object.entries(games)
+
+        .forEach(
+
+            ([gameId, game]) => {
 
                 renderGame(
 
@@ -1496,9 +1559,9 @@ function renderServers() {
 
                 );
 
-                }
-            );
-    }
+            }
+
+        );
 
     if (
 
@@ -2803,6 +2866,9 @@ function escapeHtml(
 ========================= */
 
 loadDarkMode();
+
+selectedGame =
+    getGameFromCurrentUrl();
 
 loadServers();
 
