@@ -1297,6 +1297,51 @@ body.dark-mode .details-row {
         th:nth-child(5), td:nth-child(5) { width: 16%; }
     }
 
+
+/* =========================
+   STATIC SEO CONTENT
+========================= */
+.seo-content {
+    max-width: 900px;
+    margin: 0 0 24px 0;
+    padding: 18px 20px;
+    background: #fff;
+    border: 1px solid #d3d7dc;
+    border-radius: 7px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.045);
+}
+
+.seo-content h2 {
+    margin: 0 0 10px 0;
+    font-size: 20px;
+}
+
+.seo-content p {
+    margin: 7px 0;
+    color: #555c65;
+}
+
+body.dark-mode .seo-content {
+    background: var(--surface);
+    border-color: var(--border);
+    box-shadow: var(--shadow);
+}
+
+body.dark-mode .seo-content p {
+    color: #aeb5be;
+}
+
+@media (max-width: 600px) {
+    .seo-content {
+        padding: 15px;
+        margin-bottom: 18px;
+    }
+
+    .seo-content h2 {
+        font-size: 18px;
+    }
+}
+
 </style>
 
 </head>
@@ -1362,6 +1407,22 @@ onkeydown="handleSearchKey(event)"
 </div>
 
 
+
+
+<!-- CONTENIDO ESTÁTICO PARA SEO: permanece visible aunque la API tarde o falle -->
+<section class="seo-content" aria-labelledby="seo-heading">
+    <h2 id="seo-heading">Plutonium Game Servers</h2>
+
+    <p>
+        Browse live Plutonium game servers for Black Ops II, Black Ops,
+        Modern Warfare 3 and World at War.
+    </p>
+
+    <p>
+        View active players, maps, game modes, server names, IP addresses
+        and other server information.
+    </p>
+</section>
 
 <div id="servers"></div>
 
